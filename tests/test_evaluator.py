@@ -4,6 +4,7 @@ import json
 import os
 import tempfile
 import sys
+from unittest.mock import patch
 
 # Add parent directory to path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -265,14 +266,15 @@ class TestBugFixEvaluator(unittest.TestCase):
         with open(self.ai_pr_file.name, "w") as f:
             json.dump(MockGitHubPRParser().parse_pr("ai_pr"), f)
         
-        # Patch the evaluator's dependencies with mocks
-        self.original_github_parser = BugFixEvaluator.github_parser
-        self.original_code_analyzer = BugFixEvaluator.code_analyzer
-        self.original_test_runner = TestRunner
+        # Set up patches
+        self.github_parser_patcher = patch('src.evaluator.GitHubPRParser', MockGitHubPRParser)
+        self.code_analyzer_patcher = patch('src.evaluator.CodeAnalyzer', MockCodeAnalyzer)
+        self.test_runner_patcher = patch('src.evaluator.TestRunner', MockTestRunner)
         
-        BugFixEvaluator.github_parser = MockGitHubPRParser()
-        BugFixEvaluator.code_analyzer = MockCodeAnalyzer()
-        sys.modules["src.test_runner"].TestRunner = MockTestRunner
+        # Start patches
+        self.mock_github_parser = self.github_parser_patcher.start()
+        self.mock_code_analyzer = self.code_analyzer_patcher.start()
+        self.mock_test_runner = self.test_runner_patcher.start()
     
     def tearDown(self):
         """Clean up after the test case."""
@@ -280,10 +282,10 @@ class TestBugFixEvaluator(unittest.TestCase):
         os.unlink(self.engineer_pr_file.name)
         os.unlink(self.ai_pr_file.name)
         
-        # Restore original implementations
-        BugFixEvaluator.github_parser = self.original_github_parser
-        BugFixEvaluator.code_analyzer = self.original_code_analyzer
-        sys.modules["src.test_runner"].TestRunner = self.original_test_runner
+        # Stop patches
+        self.github_parser_patcher.stop()
+        self.code_analyzer_patcher.stop()
+        self.test_runner_patcher.stop()
     
     def test_evaluator_with_file_paths(self):
         """Test evaluator with local file paths."""

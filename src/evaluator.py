@@ -7,9 +7,9 @@ import tempfile
 from typing import Dict, List, Tuple, Any
 import shutil
 
-from github_parser import GitHubPRParser
-from code_analyzer import CodeAnalyzer
-from test_runner import TestRunner
+from src.github_parser import GitHubPRParser
+from src.code_analyzer import CodeAnalyzer
+from src.test_runner import TestRunner
 
 class BugFixEvaluator:
     def __init__(self, engineer_pr: str, ai_pr: str, weights: Dict[str, float] = None):
@@ -534,12 +534,69 @@ class BugFixEvaluator:
         
         print(f"Report saved to {output_path}")
     
-    def run_evaluation(self, output_path: str = None) -> Dict[str, Any]:
+    def generate_html_report(self, json_report_path: str, html_output_path: str = None) -> str:
+        """
+        Generate an HTML report from the JSON evaluation.
+        
+        Args:
+            json_report_path: Path to the JSON report
+            html_output_path: Path to save the HTML report (defaults to JSON path with .html extension)
+            
+        Returns:
+            Path to the generated HTML file
+        """
+        if html_output_path is None:
+            html_output_path = os.path.splitext(json_report_path)[0] + '.html'
+        
+        # Get the path to the HTML template
+        script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        template_path = os.path.join(script_dir, "web_report.html")
+        
+        if not os.path.exists(template_path):
+            print(f"Warning: HTML template not found at {template_path}")
+            print("Please make sure web_report.html is in the project root directory.")
+            return None
+        
+        # Read the JSON report
+        try:
+            with open(json_report_path, 'r') as f:
+                report_data = json.load(f)
+        except Exception as e:
+            print(f"Error reading JSON report: {e}")
+            return None
+        
+        # Read the HTML template
+        with open(template_path, 'r') as f:
+            template = f.read()
+        
+        # Create output directory if it doesn't exist
+        output_dir = os.path.dirname(html_output_path)
+        if output_dir and not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+        
+        # Update the template with report data
+        modified_template = template.replace(
+            "// Run on page load - try to load from a parameter or use demo data",
+            f"// Report data embedded directly\nconst reportData = {json.dumps(report_data, indent=2)};"
+        ).replace(
+            "if (reportPath) {\n                loadReportData(reportPath);\n            } else {\n                loadDemoData();\n            }",
+            "renderReport(reportData);"
+        )
+        
+        # Write the HTML file
+        with open(html_output_path, 'w') as f:
+            f.write(modified_template)
+        
+        print(f"HTML report generated at: {html_output_path}")
+        return html_output_path
+    
+    def run_evaluation(self, output_path: str = None, generate_html: bool = False) -> Dict[str, Any]:
         """
         Run the complete evaluation pipeline.
         
         Args:
             output_path: Optional path to save the report
+            generate_html: Whether to generate an HTML report
             
         Returns:
             Evaluation report dictionary
@@ -553,6 +610,10 @@ class BugFixEvaluator:
         
         if output_path:
             self.save_report(output_path)
+            
+            if generate_html:
+                html_path = self.generate_html_report(output_path)
+                print(f"You can open the HTML report in your browser: file://{os.path.abspath(html_path)}")
         
         return self.report
 
@@ -562,6 +623,7 @@ def main():
     parser.add_argument("--ai-pr", required=True, help="URL or path to AI-generated PR")
     parser.add_argument("--output", default="evaluation_report.json", help="Path to save evaluation report")
     parser.add_argument("--weights", help="JSON string with custom weights for metrics")
+    parser.add_argument("--html", action="store_true", help="Generate HTML report")
     
     args = parser.parse_args()
     
@@ -573,7 +635,7 @@ def main():
             print("Warning: Could not parse weights, using defaults")
     
     evaluator = BugFixEvaluator(args.engineer_pr, args.ai_pr, weights)
-    report = evaluator.run_evaluation(args.output)
+    report = evaluator.run_evaluation(args.output, args.html)
     
     print(f"Final score: {report['final_score']:.2f}")
     

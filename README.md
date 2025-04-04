@@ -121,6 +121,47 @@ The system evaluates PRs based on the following metrics:
 
 - `GITHUB_TOKEN`: GitHub personal access token for API requests (optional)
 
+## HTML Reports
+
+The Bug Fix Evaluator can now generate modern, visually appealing HTML reports from the JSON evaluation data. This makes it easier to understand and share the evaluation results.
+
+### Generating HTML Reports
+
+You can generate HTML reports using one of these methods:
+
+1. **Using the CLI with the `--html` flag**:
+   ```bash
+   python -m src.evaluator --engineer-pr path/to/engineer_pr.json --ai-pr path/to/ai_pr.json --output report.json --html
+   ```
+
+2. **Using the Python API**:
+   ```python
+   from src.evaluator import BugFixEvaluator
+   
+   evaluator = BugFixEvaluator("path/to/engineer_pr.json", "path/to/ai_pr.json")
+   report = evaluator.run_evaluation("report.json", generate_html=True)
+   ```
+
+3. **Converting an existing JSON report**:
+   ```python
+   from src.evaluator import BugFixEvaluator
+   
+   evaluator = BugFixEvaluator("", "")  # Placeholder values
+   html_path = evaluator.generate_html_report("path/to/existing/report.json")
+   ```
+
+### HTML Report Features
+
+The HTML report includes:
+
+- Summary of both PRs (Engineer and AI)
+- Final evaluation score with visual indicator
+- Detailed breakdown of individual metric scores
+- Bug information and affected files
+- Improvement suggestions for the AI-generated solution
+
+The reports are self-contained HTML files that can be viewed in any modern browser without additional dependencies.
+
 ## License
 
 MIT 
