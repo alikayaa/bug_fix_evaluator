@@ -44,18 +44,27 @@ def setup_logger(
     console_handler.setFormatter(logging.Formatter(format_str))
     root_logger.addHandler(console_handler)
     
-    # Create file handler if log_file is specified
+    # Configure file handler if log_file is specified
     if log_file:
+        configure_file_handler(root_logger, log_file, level, format_str)
+    
+    # Set specific logger levels
+    set_specific_logger_levels(level)
+
+def configure_file_handler(logger: logging.Logger, log_file: str, level: int, format_str: str) -> None:
+    """Configure file handler for logging."""
+    try:
         file_handler = logging.FileHandler(log_file)
         file_handler.setLevel(level)
         file_handler.setFormatter(logging.Formatter(format_str))
-        root_logger.addHandler(file_handler)
-    
-    # Set specific logger levels
+        logger.addHandler(file_handler)
+    except Exception as e:
+        logger.error(f"Failed to set up file logging: {e}")
+
+def set_specific_logger_levels(level: int) -> None:
+    """Set specific logger levels for external libraries."""
     logging.getLogger("requests").setLevel(logging.WARNING)
     logging.getLogger("urllib3").setLevel(logging.WARNING)
-    
-    # Our package logger
     pkg_logger = logging.getLogger("bug_fix_cursor_evaluator")
     pkg_logger.setLevel(level)
 
