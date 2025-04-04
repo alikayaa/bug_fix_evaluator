@@ -5,7 +5,6 @@ A tool for evaluating bug fixes by comparing engineer and AI solutions or analyz
 ## Features
 
 - Evaluate bug fixes by comparing engineer and AI solutions
-- Analyze a single PR using OpenAI's API
 - Prepare PRs for evaluation with Cursor's agent mode
 - Generate comprehensive reports in various formats (HTML, JSON, Markdown, Text)
 - Integrations for Cursor IDE
@@ -48,10 +47,9 @@ bug-fix-evaluator prepare https://github.com/owner/repo/pull/123 --open-cursor -
 ```
 
 This will:
-1. Clone the repository
-2. Fetch the PR diff
-3. Create instruction files for the Cursor agent
-4. Open the instructions file in Cursor
+1. Fetch the PR diff
+2. Create instruction files for the Cursor agent
+3. Open the instructions file in Cursor
 
 Next:
 1. With the instructions file open in Cursor, activate Agent mode (Cmd+Shift+P and select "Enable Agent Mode")
@@ -88,53 +86,6 @@ The easiest way to use Bug Fix Evaluator is through the included VS Code extensi
 
 For detailed installation and usage instructions, see [Extension Installation Guide](docs/extension_installation.md).
 
-### Other Evaluation Methods
-
-#### Comparing Engineer and AI Bug Fixes
-
-```bash
-# Compare two GitHub PRs
-bug-fix-evaluator compare --engineer https://github.com/owner/repo/pull/123 --ai https://github.com/owner/repo/pull/456
-
-# Compare specific commits
-bug-fix-evaluator commits --repo https://github.com/owner/repo.git --before-engineer abc123 --after-engineer def456 --before-ai ghi789 --after-ai jkl012
-```
-
-#### Evaluating a Single PR with OpenAI
-
-```bash
-# Evaluate a single PR using OpenAI's API
-bug-fix-evaluator evaluate https://github.com/owner/repo/pull/123 --model gpt-4-turbo
-
-# Using a different report format
-bug-fix-evaluator evaluate https://github.com/owner/repo/pull/123 --format markdown
-```
-
-## Examples
-
-See the `examples/` directory for sample scripts demonstrating the API's usage:
-
-- `evaluate_commits.py`: Compare bug fixes using commit SHAs
-- `evaluate_pr.py`: Evaluate a single PR using OpenAI
-- `cursor_agent_evaluation.py`: Prepare a PR for evaluation with Cursor agent mode
-
-## Configuration
-
-You can customize the evaluation metrics and behavior using a configuration file:
-
-```yaml
-# config.yaml
-log_level: INFO
-metrics:
-  weight_correctness: 0.30
-  weight_completeness: 0.15
-  weight_pattern_match: 0.10
-  weight_cleanliness: 0.15
-  weight_efficiency: 0.15
-  weight_complexity: 0.15
-report:
-  output_dir: reports
-```
 
 ## License
 
