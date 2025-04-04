@@ -446,7 +446,7 @@ def wait_for_results(args):
         
         # Generate report if requested
         if args.report:
-            report_path = generate_report(args.results_file, args.format, args.report_dir, args.verbose)
+            report_path = generate_report(args.results_file, args.report_dir, args.format, args.verbose)
             print(f"\n📄 Report generated: {report_path}")
             
             if args.open:

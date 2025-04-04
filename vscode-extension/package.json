@@ -24,7 +24,7 @@
   "activationEvents": [
     "onCommand:bugFixEvaluator.evaluatePR",
     "onCommand:bugFixEvaluator.evaluateLocalPR",
-    "onCommand:bugFixEvaluator.showReport",
+    "onCommand:bugFixEvaluator.showReport"
   ],
   "main": "./extension.js",
   "contributes": {

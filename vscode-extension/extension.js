@@ -209,7 +209,6 @@ function activate(context) {
     context.subscriptions.push(evaluatePRCommand);
     context.subscriptions.push(evaluateLocalPRCommand);
     context.subscriptions.push(showReportCommand);
-    context.subscriptions.push(autoEvaluateAndReportCommand);
 }
 
 function getConfig(key, defaultValue) {

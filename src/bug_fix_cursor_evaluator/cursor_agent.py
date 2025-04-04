@@ -103,8 +103,9 @@ class CursorAgentEvaluator:
         )
         
         # Generate results file path
-        results_file = os.path.join(self.output_dir, f"{repo_name}_{pr_number}_results.json")
-        
+        results_file = os.path.join(self.output_dir, f"{repo_owner}_{repo_name.replace('/', '_')}_{pr_number}_results.json")
+        results_file = os.path.abspath(results_file)
+
         print(f"\n✅ PR preparation complete!")
         print(f"\n📋 Evaluation Files:")
         print(f"- Instructions: {instruction_file}")
@@ -397,9 +398,20 @@ This is crucial for the Bug Fix Evaluator to process your results.
             Dict: The results loaded from the file.
         """
         self.logger.info(f"Waiting for results file: {results_file}")
-        results = wait_for_results(results_file, timeout=self.timeout)
-        self.logger.info(f"Results received for {results_file}")
-        return results
+        success = wait_for_results(results_file, timeout=self.timeout)
+        
+        if not success:
+            raise TimeoutError(f"Timed out waiting for results file: {results_file}")
+            
+        # Now load and return the actual results data
+        try:
+            with open(results_file, 'r') as f:
+                results = json.load(f)
+            self.logger.info(f"Results loaded from {results_file}")
+            return results
+        except Exception as e:
+            self.logger.error(f"Error loading results from {results_file}: {e}")
+            raise
 
     def open_in_cursor(self, file_path: str) -> bool:
         """Open a file in Cursor.
