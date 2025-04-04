@@ -16,6 +16,9 @@ A library and command-line tool for evaluating bug fixes by comparing engineer a
   - Markdown for documentation
   - Plain text for quick viewing
 - Extensible scoring system with configurable metrics
+- Integrations with development tools:
+  - Cursor extension
+  - More coming soon!
 
 ## Installation
 
@@ -86,6 +89,18 @@ print(f"Overall score: {result['overall_score']}")
 print(f"Report saved to: {result['report_path']}")
 ```
 
+## Integrations
+
+### Cursor Extension
+
+The Bug Fix Evaluator includes a Cursor extension for evaluating bug fixes directly within the editor:
+
+- Evaluate bug fixes by comparing Git commits
+- View evaluation reports within Cursor
+- Configure evaluation metrics and settings
+
+For more details, see the [Cursor integration documentation](./integrations/cursor/README.md).
+
 ## Configuration
 
 You can customize the evaluator by providing a configuration file:
@@ -94,11 +109,11 @@ You can customize the evaluator by providing a configuration file:
 {
   "log_level": "INFO",
   "metrics": {
-    "weight_correctness": 0.35,
+    "weight_correctness": 0.30,
     "weight_completeness": 0.15,
     "weight_pattern_match": 0.10,
     "weight_cleanliness": 0.15,
-    "weight_efficiency": 0.10,
+    "weight_efficiency": 0.15,
     "weight_complexity": 0.15
   },
   "report": {
@@ -112,11 +127,11 @@ You can customize the evaluator by providing a configuration file:
 
 The evaluator scores bug fixes using several metrics:
 
-1. **Correctness (35%)**: Does the fix correctly address the bug?
+1. **Correctness (30%)**: Does the fix correctly address the bug?
 2. **Completeness (15%)**: Does the fix address all aspects of the bug?
 3. **Pattern Match (10%)**: How well does the fix pattern match the reference?
 4. **Cleanliness (15%)**: Does the code follow good practices?
-5. **Efficiency (10%)**: Is the fix efficient in terms of code size and complexity?
+5. **Efficiency (15%)**: Is the fix efficient in terms of code size and complexity?
 6. **Complexity (15%)**: Is the fix appropriately complex for the problem?
 
 ## Contributing

@@ -1,13 +1,9 @@
 """
-Integrations module for Bug Fix Evaluator.
+Integration modules for Bug Fix Evaluator.
 
-This module provides integrations with various external services and tools.
-Future integrations may include:
-- GitHub API for Pull Request data
-- VS Code extension integration
-- Cursor plugin integration
-- CI/CD systems
+This package contains integration modules for various platforms and tools.
 """
 
-# Import integrations here as they are implemented
-# For now, this is a placeholder
+from .. import __version__
+
+__all__ = []

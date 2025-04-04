@@ -39,6 +39,7 @@ setup(
     entry_points={
         "console_scripts": [
             "bug-fix-evaluator=bug_fix_evaluator.cli:main",
+            "bug-fix-evaluator-cursor=bug_fix_evaluator.integrations.cursor_adapter:main",
         ],
     },
     include_package_data=True,

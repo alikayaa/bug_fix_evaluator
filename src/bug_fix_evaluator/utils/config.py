@@ -15,11 +15,11 @@ DEFAULT_CONFIG = {
     "log_level": "INFO",
     "work_dir": None,  # Will use a temporary directory if None
     "metrics": {
-        "weight_correctness": 0.30,
+        "weight_correctness": 0.35,
         "weight_completeness": 0.15,
         "weight_pattern_match": 0.10,
         "weight_cleanliness": 0.15,
-        "weight_efficiency": 0.15,
+        "weight_efficiency": 0.10,
         "weight_complexity": 0.15
     },
     "report": {

@@ -92,11 +92,11 @@ class TestConfig(unittest.TestCase):
         
         # Fix weights to ensure they sum to 1.0
         config['metrics'] = {
-            "weight_correctness": 0.30,
+            "weight_correctness": 0.35,
             "weight_completeness": 0.15,
             "weight_pattern_match": 0.10,
             "weight_cleanliness": 0.15,
-            "weight_efficiency": 0.15,
+            "weight_efficiency": 0.10,
             "weight_complexity": 0.15
         }
         
