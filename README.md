@@ -19,9 +19,78 @@ cd bug_fix_evaluator
 pip install -e .
 ```
 
+### Installing the VS Code Extension
+
+The VS Code extension needs to be built and installed manually:
+
+```bash
+# From the repository root
+cd vscode-extension
+npm install
+npm run package
+# This will create bug-fix-evaluator-0.1.0.vsix in the vscode-extension folder
+```
+
+Then you can install the extension in Cursor:
+- Navigate to the `vscode-extension` folder in the repository
+- Right-click on the `bug-fix-evaluator-0.1.0.vsix` file
+- Select "Install Extension VSIX" from the context menu
+
 ## Usage
 
-### Comparing Engineer and AI Bug Fixes
+### Using Cursor Agent Mode for Evaluation
+
+The recommended way to evaluate bug fixes is using Cursor's agent mode:
+
+```bash
+# Prepare a PR for evaluation with Cursor agent mode
+bug-fix-evaluator prepare https://github.com/owner/repo/pull/123 --open-cursor --no-cleanup
+```
+
+This will:
+1. Clone the repository
+2. Fetch the PR diff
+3. Create instruction files for the Cursor agent
+4. Open the instructions file in Cursor
+
+Next:
+1. With the instructions file open in Cursor, activate Agent mode (Cmd+Shift+P and select "Enable Agent Mode")
+2. Ask the agent: "Please evaluate this PR based on the instructions in this file"
+3. The agent will analyze the PR and save results to the specified location
+4. Generate a report from the results:
+   ```bash
+   bug-fix-evaluator report path/to/evaluation_results.json --format html --open
+   ```
+
+### Cursor IDE Extension (Recommended)
+
+The easiest way to use Bug Fix Evaluator is through the included VS Code extension for Cursor:
+
+1. **Build and install the extension**:
+   - See the [Installing the VS Code Extension](#installing-the-vs-code-extension) section above
+   - Or, if already built:
+     - Navigate to the `vscode-extension` folder in the repository
+     - Right-click on the `bug-fix-evaluator-0.1.0.vsix` file
+     - Select "Install Extension VSIX" from the context menu
+
+2. **Configure the extension**:
+   - Open settings with `Cmd+,` (macOS) or `Ctrl+,` (Windows/Linux)
+   - Search for "Bug Fix Evaluator"
+   - Set the Python path, output directory, and optional GitHub token
+
+3. **Use the extension commands**:
+   - Press `Cmd+Shift+P` / `Ctrl+Shift+P` to open the command palette
+   - Select one of these commands:
+     - `Bug Fix Evaluator: Evaluate GitHub PR` - Evaluate a PR from GitHub
+     - `Bug Fix Evaluator: Evaluate Local PR` - Evaluate a PR in your local repository
+     - `Bug Fix Evaluator: Auto Evaluate PR & Generate Report` - Complete end-to-end workflow
+     - `Bug Fix Evaluator: View Evaluation Report` - View a previously generated report
+
+For detailed installation and usage instructions, see [Extension Installation Guide](docs/extension_installation.md).
+
+### Other Evaluation Methods
+
+#### Comparing Engineer and AI Bug Fixes
 
 ```bash
 # Compare two GitHub PRs
@@ -31,7 +100,7 @@ bug-fix-evaluator compare --engineer https://github.com/owner/repo/pull/123 --ai
 bug-fix-evaluator commits --repo https://github.com/owner/repo.git --before-engineer abc123 --after-engineer def456 --before-ai ghi789 --after-ai jkl012
 ```
 
-### Evaluating a Single PR with OpenAI
+#### Evaluating a Single PR with OpenAI
 
 ```bash
 # Evaluate a single PR using OpenAI's API
@@ -40,51 +109,6 @@ bug-fix-evaluator evaluate https://github.com/owner/repo/pull/123 --model gpt-4-
 # Using a different report format
 bug-fix-evaluator evaluate https://github.com/owner/repo/pull/123 --format markdown
 ```
-
-### Using Cursor Agent Mode for Evaluation
-
-Instead of using OpenAI's API directly, you can leverage Cursor's agent mode for PR evaluation:
-
-```bash
-# Prepare a PR for evaluation with Cursor agent mode
-bug-fix-evaluator prepare https://github.com/owner/repo/pull/123 --open-cursor
-
-# After completing the evaluation in Cursor, process the results and generate a report
-bug-fix-evaluator report path/to/evaluation_results.json --format html --open
-```
-
-#### Cursor Agent Evaluation Process
-
-1. Run the `bug-fix-evaluator prepare` command with a PR URL
-2. The tool will clone the repository, get the PR diff, and prepare instruction files
-3. Open the instructions file in Cursor
-4. Use Cursor's agent mode to evaluate the PR based on the provided instructions
-5. The agent will create a JSON file with the evaluation results
-6. Process the results using `bug-fix-evaluator report` to generate a report
-
-## Integrations
-
-### Cursor IDE Extension
-
-The Bug Fix Evaluator includes a VS Code extension that can be used directly within Cursor IDE:
-
-1. Install the extension from the `dist/bug-fix-evaluator-0.1.0.vsix` file:
-   - Open Cursor
-   - Press `Cmd+Shift+P` (macOS) or `Ctrl+Shift+P` (Windows/Linux)
-   - Type "Extensions: Install from VSIX" and select that option
-   - Browse to the location of the VSIX file and select it
-
-2. Configure the extension in Cursor settings:
-   - Open settings with `Cmd+,` (macOS) or `Ctrl+,` (Windows/Linux)
-   - Search for "Bug Fix Evaluator"
-   - Set the Python path, output directory, and optional GitHub token
-
-3. Use the extension with the command palette:
-   - `Bug Fix Evaluator: Evaluate GitHub PR` - Evaluate a PR from GitHub
-   - `Bug Fix Evaluator: Evaluate Local PR` - Evaluate a PR in your local repository
-   - `Bug Fix Evaluator: View Evaluation Report` - View a previously generated report
-
-For detailed installation and usage instructions, see [Extension Installation Guide](docs/extension_installation.md).
 
 ## Examples
 
