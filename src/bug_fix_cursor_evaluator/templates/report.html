@@ -76,9 +76,11 @@
             display: flex;
             gap: 30px;
             margin-bottom: 30px;
+            flex-wrap: wrap;
         }
         .lists > div {
             flex: 1;
+            min-width: 250px;
         }
         .lists h3 {
             margin-top: 0;
@@ -92,6 +94,9 @@
         }
         .suggestions h3 {
             color: #f39c12;
+        }
+        .differences h3 {
+            color: #9b59b6;
         }
         ul {
             padding-left: 20px;
@@ -108,6 +113,9 @@
         }
         .suggestions li {
             color: #f39c12;
+        }
+        .differences li {
+            color: #9b59b6;
         }
         footer {
             margin-top: 40px;
@@ -132,7 +140,20 @@
         <div class="overall-score">{{ "%.1f"|format(data.overall_score) }}/100</div>
     </div>
 
+    <h2>Evaluation Summary</h2>
+    
     <div class="lists">
+        {% if data.implementation_differences %}
+        <div class="differences">
+            <h3>Implementation Differences</h3>
+            <ul>
+                {% for diff in data.implementation_differences %}
+                <li>{{ diff }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        
         <div class="strengths">
             <h3>Strengths</h3>
             <ul>
@@ -177,6 +198,9 @@
                 <td class="metric-weight">{{ (metric.weight * 100)|int }}%</td>
                 <td>
                     <p><strong>Explanation:</strong> {{ metric.details.explanation }}</p>
+                    {% if metric.details.comparison %}
+                    <p><strong>Comparison:</strong> {{ metric.details.comparison }}</p>
+                    {% endif %}
                     <p><strong>Strength:</strong> {{ metric.details.strength }}</p>
                     <p><strong>Weakness:</strong> {{ metric.details.weakness }}</p>
                 </td>

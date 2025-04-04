@@ -2,7 +2,7 @@
 Results processing module for Bug Fix Cursor Evaluator.
 
 This module provides functionality for loading and processing evaluation results
-from Cursor agent evaluations.
+from Cursor agent evaluations that compare local code against PR solutions.
 """
 
 import json
@@ -51,7 +51,8 @@ def load_cursor_results(file_path: str) -> Dict[str, Any]:
             if metric not in data["criteria"]:
                 raise ValueError(f"Missing evaluation criteria: {metric}")
                 
-            # Each metric should have score, explanation, strength, and weakness
+            # Each metric should have score, explanation, strength, weakness
+            # and optionally comparison
             metric_data = data["criteria"][metric]
             for field in ["score", "explanation", "strength", "weakness"]:
                 if field not in metric_data:
@@ -66,13 +67,15 @@ def load_cursor_results(file_path: str) -> Dict[str, Any]:
             strengths = data.get("strengths", [])
             weaknesses = data.get("weaknesses", [])
             suggestions = data.get("suggestions", [])
+            implementation_differences = data.get("implementation_differences", [])
             
             # Create proper overall structure
             data["overall"] = {
                 "score": overall_score / 10,  # Convert to 0-10 scale
                 "strengths": strengths,
                 "weaknesses": weaknesses,
-                "suggestions": suggestions
+                "suggestions": suggestions,
+                "implementation_differences": implementation_differences
             }
             
             logger.info("Converted overall integer to dictionary format")
@@ -110,24 +113,36 @@ def process_results(results_data: Dict[str, Any]) -> Dict[str, Any]:
     # Extract metrics
     metrics = {}
     for metric_name, metric_data in results_data["criteria"].items():
+        details = {
+            "explanation": metric_data["explanation"],
+            "strength": metric_data["strength"],
+            "weakness": metric_data["weakness"]
+        }
+        
+        # Add comparison field if available
+        if "comparison" in metric_data:
+            details["comparison"] = metric_data["comparison"]
+            
         metrics[metric_name] = {
             "score": metric_data["score"],
             "weight": get_metric_weight(metric_name),
-            "details": {
-                "explanation": metric_data["explanation"],
-                "strength": metric_data["strength"],
-                "weakness": metric_data["weakness"]
-            }
+            "details": details
         }
     
     # Create processed data structure
     processed_data = {
-        "overall_score": results_data["overall"]["score"] * 10,  # Convert 0-10 to 0-100
+        "overall_score": results_data["overall"]["score"] * 10 if "score" in results_data["overall"] else results_data["overall"] * 10,  # Convert 0-10 to 0-100
         "metrics": metrics,
-        "strengths": results_data["overall"]["strengths"],
-        "weaknesses": results_data["overall"]["weaknesses"],
-        "suggestions": results_data["overall"]["suggestions"]
+        "strengths": results_data.get("strengths", results_data["overall"].get("strengths", [])),
+        "weaknesses": results_data.get("weaknesses", results_data["overall"].get("weaknesses", [])),
+        "suggestions": results_data.get("suggestions", results_data["overall"].get("suggestions", []))
     }
+    
+    # Add implementation differences if available
+    if "implementation_differences" in results_data:
+        processed_data["implementation_differences"] = results_data["implementation_differences"]
+    elif "implementation_differences" in results_data.get("overall", {}):
+        processed_data["implementation_differences"] = results_data["overall"]["implementation_differences"]
     
     # Add PR info
     processed_data.update(pr_info)

@@ -257,11 +257,11 @@ class CursorAgentEvaluator:
         instruction_content = f"""# Bug Fix Evaluation - IMPORTANT AGENT INSTRUCTIONS
 
 ## Instructions for Cursor Agent
-You are currently in Cursor's agent mode. Please carefully follow these instructions to evaluate a bug fix PR.
+You are currently in Cursor's agent mode. Please carefully follow these instructions to evaluate the current implementation against a reference bug fix PR.
 
 ## Steps for You (the User)
 1. After opening this file in Cursor, activate Agent Mode by pressing Cmd+Shift+P (macOS) or Ctrl+Shift+P (Windows/Linux) and selecting "Enable Agent Mode"
-2. Ask the agent: "Please evaluate this PR based on the instructions in this file and save the results to the exact file path specified"
+2. Ask the agent: "Please evaluate the local implementation against the reference PR based on the instructions in this file and save the results to the exact file path specified"
 3. Wait for the agent to complete the evaluation
 4. Make sure the agent saves the results to exactly: `{results_file}`
 5. Check that the file has been created successfully
@@ -270,17 +270,24 @@ You are currently in Cursor's agent mode. Please carefully follow these instruct
 - Repository: {repo_name}
 - PR Number: {pr_number}
 - PR URL: {pr_url}
-- Diff File: {os.path.abspath(diff_file)}
+- Reference PR Diff File: {os.path.abspath(diff_file)}
+
+## Evaluation Task (For the Agent)
+Dear Agent, your task is to compare the **local code implementation** against the **reference PR solution** from the diff file. Both are intended to fix the same bug, but may have different approaches.
+
+1. First, examine the local code implementation (i.e., the files currently in the workspace)
+2. Then, review the reference PR solution from the diff file at: {os.path.abspath(diff_file)}
+3. Compare both implementations to determine how effectively each addresses the bug
 
 ## Evaluation Criteria (For the Agent)
-Dear Agent, please evaluate the bug fix based on the following criteria:
+Please evaluate the local implementation against the following criteria, comparing it with the reference PR solution:
 
-1. **Correctness (1-10)**: Does the fix correctly address the bug?
-2. **Completeness (1-10)**: Does the fix address all aspects of the bug?
-3. **Code Quality (1-10)**: Is the code clean, readable, and well-structured?
-4. **Efficiency (1-10)**: Is the fix efficient in terms of performance?
-5. **Testing (1-10)**: Does the fix include appropriate tests?
-6. **Documentation (1-10)**: Is the fix well-documented?
+1. **Correctness (1-10)**: Does the local implementation correctly address the bug? How does it compare to the PR solution?
+2. **Completeness (1-10)**: Does the local implementation address all aspects of the bug? Is it more or less complete than the PR solution?
+3. **Code Quality (1-10)**: Is the local code clean, readable, and well-structured compared to the PR solution?
+4. **Efficiency (1-10)**: Is the local implementation efficient in terms of performance? How does it compare to the PR?
+5. **Testing (1-10)**: Does the local implementation include appropriate tests? Better or worse than the PR?
+6. **Documentation (1-10)**: Is the local implementation well-documented compared to the PR solution?
 
 ## Output Format (For the Agent)
 Your evaluation must be saved as a JSON file at EXACTLY this path:
@@ -294,63 +301,74 @@ The JSON must have the following structure:
   "criteria": {{
     "correctness": {{
       "score": 8,
-      "explanation": "The fix correctly addresses the main issue...",
+      "explanation": "The local implementation correctly addresses the main issue by...",
+      "comparison": "Compared to the PR solution, the local implementation...",
       "strength": "Good understanding of the root cause...",
       "weakness": "Could have added more validation..."
     }},
     "completeness": {{
       "score": 7,
-      "explanation": "The fix addresses most aspects...",
+      "explanation": "The local implementation addresses most aspects...",
+      "comparison": "The PR solution is more/less complete because...",
       "strength": "Covers the main scenarios...",
       "weakness": "Doesn't handle edge case X..."
     }},
     "code_quality": {{
       "score": 9,
-      "explanation": "The code is clean and readable...",
+      "explanation": "The local code is clean and readable...",
+      "comparison": "The local code is better organized than the PR because...",
       "strength": "Good variable names and structure...",
       "weakness": "Minor deviation from project conventions..."
     }},
     "efficiency": {{
       "score": 8,
-      "explanation": "The solution is reasonably efficient...",
+      "explanation": "The local solution is reasonably efficient...",
+      "comparison": "The PR solution uses a more/less optimized approach by...",
       "strength": "Avoids unnecessary computations...",
       "weakness": "Could use a more optimized algorithm for X..."
     }},
     "testing": {{
       "score": 7,
-      "explanation": "Tests cover the main scenarios...",
+      "explanation": "Local tests cover the main scenarios...",
+      "comparison": "The PR includes more/fewer tests for...",
       "strength": "Good test structure...",
       "weakness": "Missing tests for edge cases..."
     }},
     "documentation": {{
       "score": 8,
-      "explanation": "Documentation is clear...",
-      "strength": "Good comments and PR description...",
+      "explanation": "Local documentation is clear...",
+      "comparison": "PR documentation is more/less detailed in explaining...",
+      "strength": "Good comments and descriptions...",
       "weakness": "Could explain the rationale better..."
     }}
   }},
   "overall": 78,
+  "implementation_differences": [
+    "The local implementation uses approach X while the PR uses Y",
+    "Local code handles edge case Z differently",
+    "PR includes more robust error handling for scenario A"
+  ],
   "strengths": [
-    "Good understanding of the root cause",
-    "Clean implementation",
-    "Follows project conventions"
+    "Local implementation is more maintainable",
+    "Better performance in key operations",
+    "More comprehensive test coverage"
   ],
   "weaknesses": [
-    "Doesn't handle all edge cases",
-    "Missing some validation"
+    "Doesn't handle all edge cases that the PR addresses",
+    "Less detailed documentation"
   ],
   "suggestions": [
-    "Add validation for X",
-    "Consider optimizing Y",
-    "Add tests for edge case Z"
+    "Consider adopting the PR's approach for handling X",
+    "Add validation for Y as seen in the PR",
+    "Improve test coverage for edge case Z"
   ]
 }}
 ```
 
 ## PR Diff File
-The PR diff is available at: {os.path.abspath(diff_file)}
+The reference PR diff is available at: {os.path.abspath(diff_file)}
 
-You should analyze this diff file to understand the changes made in the PR.
+You should analyze this diff file to understand the approved changes made in the PR, and compare them with the local implementation.
 
 ## Saving the Results (CRITICAL)
 After completing your evaluation:

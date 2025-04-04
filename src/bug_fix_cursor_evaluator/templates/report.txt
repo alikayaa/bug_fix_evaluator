@@ -11,6 +11,12 @@ OVERALL SCORE: {{ "%.1f"|format(data.overall_score) }}/100
 
 SUMMARY
 -------
+{% if data.implementation_differences %}
+Implementation Differences:
+{% for diff in data.implementation_differences %}
+* {{ diff }}
+{% endfor %}
+{% endif %}
 
 Strengths:
 {% for strength in data.strengths %}
@@ -34,6 +40,9 @@ DETAILED METRICS
   Score: {{ metric.score }}/10
   Weight: {{ (metric.weight * 100)|int }}%
   Explanation: {{ metric.details.explanation }}
+  {% if metric.details.comparison %}
+  Comparison: {{ metric.details.comparison }}
+  {% endif %}
   Strength: {{ metric.details.strength }}
   Weakness: {{ metric.details.weakness }}
 
