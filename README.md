@@ -29,8 +29,8 @@ pip install bug-fix-evaluator
 To install from source:
 
 ```bash
-git clone https://github.com/yourusername/bug-fix-evaluator.git
-cd bug-fix-evaluator
+git clone https://github.com/alikayaa/bug_fix_evaluator.git
+cd bug_fix_evaluator
 pip install -e .
 ```
 
@@ -41,13 +41,13 @@ pip install -e .
 #### Evaluate from PR URLs
 
 ```bash
-bug-fix-evaluator pr --engineer https://github.com/user/repo/pull/123 --ai https://github.com/user/repo/pull/456
+bug-fix-evaluator pr --engineer https://github.com/alikayaa/repo/pull/123 --ai https://github.com/alikayaa/repo/pull/456
 ```
 
 #### Evaluate from commit SHAs
 
 ```bash
-bug-fix-evaluator commit --repo https://github.com/user/repo.git --engineer abc123 --ai def456
+bug-fix-evaluator commit --repo https://github.com/alikayaa/repo.git --engineer abc123 --ai def456
 ```
 
 #### Evaluate from directories
@@ -79,7 +79,7 @@ evaluator = BugFixEvaluator()
 
 # Evaluate from commits
 result = evaluator.evaluate_from_commits(
-    repo_url="https://github.com/user/repo.git",
+    repo_url="https://github.com/alikayaa/repo.git",
     engineer_commit="abc123",
     ai_commit="def456",
     report_format="html"

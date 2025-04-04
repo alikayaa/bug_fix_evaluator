@@ -33,4 +33,12 @@ To create a new integration, follow these steps:
 4. Add documentation and examples for your integration
 5. Update this README with information about your integration
 
-For more details, refer to the [development guidelines](../docs/development.md). 
+For more details, refer to the [development guidelines](../docs/development.md).
+
+## Repository
+
+The main repository is available at: https://github.com/alikayaa/bug_fix_evaluator
+
+## Author
+
+Ali Kaya (iletisim@alikaya.net.tr) 

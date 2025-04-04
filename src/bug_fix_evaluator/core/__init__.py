@@ -199,10 +199,10 @@ class BugFixEvaluator:
     
     def _analyze_pr(self, pr_url: str) -> Dict[str, Any]:
         """
-        Analyze a PR to extract bug fix information.
+        Analyze a GitHub PR to extract bug fix information.
         
         Args:
-            pr_url: URL to the PR
+            pr_url: URL of the GitHub PR
             
         Returns:
             Dictionary with analysis results

@@ -3,10 +3,10 @@
   "displayName": "Bug Fix Evaluator",
   "version": "0.1.0",
   "description": "Compare and evaluate AI-generated bug fixes against engineer-created fixes",
-  "publisher": "bug-fix-evaluator",
+  "publisher": "alikaya",
   "repository": {
     "type": "git",
-    "url": "https://github.com/USERNAME/bug_fix_evaluator"
+    "url": "https://github.com/alikayaa/bug_fix_evaluator"
   },
   "engines": {
     "cursor": "^0.20.0"

@@ -12,12 +12,12 @@ with open("README.md", "r", encoding="utf-8") as fh:
 setup(
     name="bug-fix-evaluator",
     version="0.2.0",
-    author="Bug Fix Evaluator Team",
-    author_email="example@example.com",
+    author="Ali Kaya",
+    author_email="iletisim@alikaya.net.tr",
     description="A tool for evaluating bug fixes by comparing engineer and AI solutions",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/bug-fix-evaluator",
+    url="https://github.com/alikayaa/bug_fix_evaluator",
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     classifiers=[

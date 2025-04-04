@@ -31,8 +31,8 @@ class RepositoryHandler:
             work_dir: Optional directory to use for git operations. If not provided,
                      a temporary directory will be created.
         """
-        self.work_dir = work_dir or tempfile.mkdtemp()
-        logger.debug(f"Repository handler initialized with work_dir: {self.work_dir}")
+        self.work_dir = work_dir or tempfile.mkdtemp(prefix="bug_fix_evaluator_")
+        logger.info(f"Using work directory: {self.work_dir}")
         
     def clone_repository(self, repo_url: str, target_dir: Optional[str] = None) -> str:
         """
@@ -371,18 +371,18 @@ class RepositoryHandler:
     
     def parse_pr_url(self, pr_url: str) -> Tuple[str, str, str]:
         """
-        Parse a GitHub PR URL to extract owner, repo, and PR number.
+        Parse a GitHub PR URL into its components.
         
         Args:
-            pr_url: GitHub PR URL
-        
+            pr_url: URL of the GitHub PR
+            
         Returns:
             Tuple of (owner, repo, pr_number)
         
         Raises:
             ValueError: If the URL is not a valid GitHub PR URL
         """
-        # Example URL: https://github.com/owner/repo/pull/123
+        # Example URL: https://github.com/alikayaa/bug_fix_evaluator/pull/123
         pattern = r"https://github\.com/([^/]+)/([^/]+)/pull/(\d+)"
         match = re.match(pattern, pr_url)
         

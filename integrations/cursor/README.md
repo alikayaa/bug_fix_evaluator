@@ -1,4 +1,4 @@
-w# Bug Fix Evaluator - Cursor Extension
+# Bug Fix Evaluator - Cursor Extension
 
 A Cursor extension for evaluating and comparing bug fixes implemented by engineers and AI.
 
@@ -18,6 +18,9 @@ A Cursor extension for evaluating and comparing bug fixes implemented by enginee
 ## Installation
 
 1. Clone the repository
+   ```bash
+   git clone https://github.com/alikayaa/bug_fix_evaluator.git
+   ```
 2. Run `npm install` in the `integrations/cursor` directory
 3. Run `npm run package` to build the extension
 4. Install the extension in Cursor
@@ -65,8 +68,12 @@ Run the tests with: `npm test`
 
 ## Contributing
 
-1. Fork the repository
+1. Fork the repository from https://github.com/alikayaa/bug_fix_evaluator
 2. Create a feature branch: `git checkout -b feature/my-feature`
 3. Commit your changes: `git commit -am 'Add my feature'`
 4. Push to the branch: `git push origin feature/my-feature`
-5. Submit a pull request 
+5. Submit a pull request
+
+## Author
+
+Ali Kaya (iletisim@alikaya.net.tr) 

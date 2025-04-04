@@ -28,10 +28,10 @@ def parse_args() -> argparse.Namespace:
         epilog="""
 Examples:
   # Evaluate from PR URLs
-  bug-fix-evaluator pr --engineer https://github.com/user/repo/pull/123 --ai https://github.com/user/repo/pull/456
+  bug-fix-evaluator pr --engineer https://github.com/alikayaa/bug_fix_evaluator/pull/123 --ai https://github.com/alikayaa/bug_fix_evaluator/pull/456
         
   # Evaluate from commit SHAs
-  bug-fix-evaluator commit --repo https://github.com/user/repo.git --engineer abc123 --ai def456
+  bug-fix-evaluator commit --repo https://github.com/alikayaa/bug_fix_evaluator.git --engineer abc123 --ai def456
         
   # Evaluate from directories
   bug-fix-evaluator directory --engineer-buggy ./engineer/buggy --engineer-fixed ./engineer/fixed --ai-buggy ./ai/buggy --ai-fixed ./ai/fixed
