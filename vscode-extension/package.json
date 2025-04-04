@@ -1,0 +1,86 @@
+{
+  "name": "bug-fix-evaluator",
+  "displayName": "Bug Fix Evaluator",
+  "description": "Evaluate bug fixes in GitHub pull requests using Cursor agent mode",
+  "version": "0.1.0",
+  "publisher": "alikaya",
+  "license": "MIT",
+  "icon": "images/icon.png",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "bug",
+    "fix",
+    "evaluation",
+    "cursor",
+    "agent",
+    "github",
+    "pull request"
+  ],
+  "activationEvents": [
+    "onCommand:bugFixEvaluator.evaluatePR",
+    "onCommand:bugFixEvaluator.evaluateLocalPR",
+    "onCommand:bugFixEvaluator.showReport"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "bugFixEvaluator.evaluatePR",
+        "title": "Bug Fix Evaluator: Evaluate GitHub PR"
+      },
+      {
+        "command": "bugFixEvaluator.evaluateLocalPR",
+        "title": "Bug Fix Evaluator: Evaluate Local PR"
+      },
+      {
+        "command": "bugFixEvaluator.showReport",
+        "title": "Bug Fix Evaluator: View Evaluation Report"
+      }
+    ],
+    "configuration": {
+      "title": "Bug Fix Evaluator",
+      "properties": {
+        "bugFixEvaluator.pythonPath": {
+          "type": "string",
+          "default": "python",
+          "description": "Path to Python executable"
+        },
+        "bugFixEvaluator.outputDirectory": {
+          "type": "string",
+          "default": "",
+          "description": "Directory to store evaluation results and reports"
+        },
+        "bugFixEvaluator.githubToken": {
+          "type": "string",
+          "default": "",
+          "description": "GitHub token for API access (optional)"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "prepare-icons": "node convert-icon.js",
+    "package": "npm run prepare-icons && npx vsce package",
+    "publish": "npm run prepare-icons && npx vsce publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alikayaa/bug_fix_evaluator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/alikayaa/bug_fix_evaluator/issues"
+  },
+  "devDependencies": {
+    "@types/node": "^16.11.7",
+    "@types/vscode": "^1.60.0",
+    "sharp": "^0.34.0",
+    "vsce": "^2.15.0"
+  },
+  "author": "",
+  "homepage": "https://github.com/alikayaa/bug_fix_evaluator#readme"
+}

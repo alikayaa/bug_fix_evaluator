@@ -1,0 +1,21 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="128" height="128" rx="14" fill="#1e88e5"/>
+  
+  <!-- Bug icon -->
+  <g transform="translate(25, 25) scale(0.8)">
+    <path d="M50,20 C50,13.4 44.6,8 38,8 C31.4,8 26,13.4 26,20 L26,22 L50,22 L50,20 Z" fill="#ffffff"/>
+    <path d="M80,50 L70,50 L70,42 C70,40.3 69.2,38.8 68,37.6 L60,30 L40,30 L32,37.6 C30.8,38.8 30,40.3 30,42 L30,50 L20,50 L20,60 L30,60 L30,72 L20,72 L20,82 L30,82 L30,89.2 C30,94 43.5,102 50,102 C56.5,102 70,94 70,89.2 L70,82 L80,82 L80,72 L70,72 L70,60 L80,60 L80,50 Z M60,92.5 C56.7,94.2 53.4,95 50,95 C46.6,95 43.3,94.2 40,92.5 L40,42 L60,42 L60,92.5 Z" fill="#ffffff"/>
+  </g>
+  
+  <!-- Wrench -->
+  <g transform="translate(75, 75) rotate(45) scale(0.45)">
+    <path d="M90,10 L90,30 L70,30 C70,38.3 76.7,45 85,45 C93.3,45 100,38.3 100,30 L100,10 L90,10 Z" fill="#ffffff"/>
+    <rect x="45" y="10" width="45" height="20" rx="2" ry="2" fill="#ffffff"/>
+  </g>
+  
+  <!-- Checkmark -->
+  <g transform="translate(25, 75) scale(0.5)">
+    <path d="M36,70 L16,50 L8,58 L36,86 L92,30 L84,22 L36,70 Z" fill="#4caf50"/>
+  </g>
+</svg> 

@@ -50,31 +50,44 @@ Instead of using OpenAI's API directly, you can leverage Cursor's agent mode for
 
 ```bash
 # Prepare a PR for evaluation with Cursor agent mode
-bug-fix-cursor-agent https://github.com/owner/repo/pull/123 --open-cursor
+bug-fix-evaluator prepare https://github.com/owner/repo/pull/123 --open-cursor
 
 # After completing the evaluation in Cursor, process the results and generate a report
-bug-fix-cursor-results path/to/evaluation_results.json --format html --open
+bug-fix-evaluator report path/to/evaluation_results.json --format html --open
 ```
 
 #### Cursor Agent Evaluation Process
 
-1. Run the `bug-fix-cursor-agent` command with a PR URL
+1. Run the `bug-fix-evaluator prepare` command with a PR URL
 2. The tool will clone the repository, get the PR diff, and prepare instruction files
 3. Open the instructions file in Cursor
 4. Use Cursor's agent mode to evaluate the PR based on the provided instructions
 5. The agent will create a JSON file with the evaluation results
-6. Process the results using `bug-fix-cursor-results` to generate a report
+6. Process the results using `bug-fix-evaluator report` to generate a report
 
 ## Integrations
 
 ### Cursor IDE Extension
 
-The Bug Fix Evaluator includes a Cursor extension for convenient access within the IDE:
+The Bug Fix Evaluator includes a VS Code extension that can be used directly within Cursor IDE:
 
-1. Install the extension from the `dist/bug-fix-evaluator.vsix` file
-2. Use the command palette to access:
-   - "Bug Fix Evaluator: Compare Engineer and AI Solutions"
-   - "Bug Fix Evaluator: Evaluate Single PR"
+1. Install the extension from the `dist/bug-fix-evaluator-0.1.0.vsix` file:
+   - Open Cursor
+   - Press `Cmd+Shift+P` (macOS) or `Ctrl+Shift+P` (Windows/Linux)
+   - Type "Extensions: Install from VSIX" and select that option
+   - Browse to the location of the VSIX file and select it
+
+2. Configure the extension in Cursor settings:
+   - Open settings with `Cmd+,` (macOS) or `Ctrl+,` (Windows/Linux)
+   - Search for "Bug Fix Evaluator"
+   - Set the Python path, output directory, and optional GitHub token
+
+3. Use the extension with the command palette:
+   - `Bug Fix Evaluator: Evaluate GitHub PR` - Evaluate a PR from GitHub
+   - `Bug Fix Evaluator: Evaluate Local PR` - Evaluate a PR in your local repository
+   - `Bug Fix Evaluator: View Evaluation Report` - View a previously generated report
+
+For detailed installation and usage instructions, see [Extension Installation Guide](docs/extension_installation.md).
 
 ## Examples
 
