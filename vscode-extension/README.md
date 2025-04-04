@@ -1,100 +1,85 @@
-# Bug Fix Evaluator for VS Code/Cursor
+# Bug Fix Evaluator VS Code Extension
 
-A VS Code/Cursor extension for evaluating bug fixes in GitHub pull requests using Cursor's agent mode.
+This extension provides integration with the Bug Fix Evaluator tool, which helps evaluate bug fixes in GitHub pull requests using Cursor's agent mode.
 
 ## Features
 
-- Evaluate GitHub PRs directly from VS Code/Cursor
-- Evaluate local PRs in your open workspace
-- Generate comprehensive reports in various formats (HTML, Markdown, JSON, Text)
-- Integrates seamlessly with Cursor's agent mode
+- Evaluate bug fixes in GitHub pull requests
+- Evaluate bug fixes in local PR branches
+- View and generate evaluation reports
+- Automated end-to-end evaluation workflow
 
 ## Requirements
 
-- VS Code or Cursor IDE
+- [Cursor Editor](https://cursor.sh/) installed and available in your PATH
 - Python 3.8 or higher
-- Bug Fix Evaluator Python package (automatically installed by the extension)
+- Bug Fix Evaluator package installed (`pip install bug-fix-cursor-evaluator`)
 
 ## Installation
 
-### From VS Code/Cursor Extensions Marketplace
-
-1. Open VS Code/Cursor
-2. Go to Extensions view (Ctrl+Shift+X / Cmd+Shift+X)
-3. Search for "Bug Fix Evaluator"
-4. Click "Install"
-
-### From VSIX File
-
-1. Download the `.vsix` file from the [releases page](https://github.com/alikayaa/bug_fix_evaluator/releases)
-2. Open VS Code/Cursor
-3. Go to Extensions view (Ctrl+Shift+X / Cmd+Shift+X)
-4. Click on "..." in the top-right of the Extensions view
-5. Choose "Install from VSIX..." and select the downloaded file
-
-## Setup
-
-Before using the extension, you need to configure a few settings:
-
-1. Open VS Code/Cursor settings (Ctrl+, / Cmd+,)
-2. Search for "Bug Fix Evaluator"
-3. Configure:
-   - `bugFixEvaluator.pythonPath`: Path to your Python executable
-   - `bugFixEvaluator.outputDirectory`: Directory to store evaluation results and reports
-   - `bugFixEvaluator.githubToken`: (Optional) GitHub token for API access
+1. Install the extension from the VS Code marketplace
+2. Install the required Python package: `pip install bug-fix-cursor-evaluator`
+3. Configure the extension settings if needed
 
 ## Usage
 
-### Evaluating a GitHub PR
+### Evaluate a GitHub PR
 
-1. Press Ctrl+Shift+P / Cmd+Shift+P to open the command palette
-2. Type "Bug Fix Evaluator: Evaluate GitHub PR" and press Enter
-3. Enter the GitHub PR URL when prompted
-4. Follow the instructions in the terminal
-5. Use Cursor's agent mode to complete the evaluation
+1. Open the Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P`)
+2. Select `Bug Fix Evaluator: Evaluate GitHub PR`
+3. Enter the GitHub PR URL (e.g., `https://github.com/owner/repo/pull/123`)
+4. The extension will prepare the PR for evaluation and open the instructions in Cursor
+5. In Cursor, enable Agent Mode and ask the agent to evaluate the PR
+6. The evaluation results will be saved to a JSON file
 
-### Evaluating a Local PR
+### Evaluate a Local PR
 
-1. Open your Git repository in VS Code/Cursor
-2. Press Ctrl+Shift+P / Cmd+Shift+P to open the command palette
-3. Type "Bug Fix Evaluator: Evaluate Local PR" and press Enter
-4. Enter the PR number when prompted
-5. Follow the instructions in the terminal
-6. Use Cursor's agent mode to complete the evaluation
+1. Open the repository in VS Code
+2. Open the Command Palette
+3. Select `Bug Fix Evaluator: Evaluate Local PR`
+4. Enter the PR number
+5. Follow the same steps as for GitHub PR evaluation
 
-### Viewing an Evaluation Report
+### View a Report
 
-1. Press Ctrl+Shift+P / Cmd+Shift+P to open the command palette
-2. Type "Bug Fix Evaluator: View Evaluation Report" and press Enter
-3. Select a results file from the list
-4. Choose a report format (HTML, Markdown, JSON, Text)
-5. The report will be generated in the specified output directory
+1. Open the Command Palette
+2. Select `Bug Fix Evaluator: View Evaluation Report`
+3. Select an evaluation results file
+4. Choose a report format (HTML, Markdown, JSON, or Text)
+5. The extension will generate the report and open it
 
-## Cursor Agent Evaluation Process
+### Automated Evaluation Workflow
 
-1. The extension prepares the PR for evaluation and provides an instruction file
-2. Open the instruction file in Cursor
-3. Enable agent mode in Cursor (Cmd+Shift+P / Ctrl+Shift+P -> "Enable Agent Mode")
-4. The agent will read the instructions, analyze the PR diff, and generate an evaluation
-5. After the evaluation is complete, use the "View Evaluation Report" command to generate a report
+For a completely automated experience, use the new automatic evaluation feature:
+
+1. Open the Command Palette
+2. Select `Bug Fix Evaluator: Auto Evaluate PR & Generate Report`
+3. Enter the GitHub PR URL
+4. The extension will:
+   - Prepare the PR for evaluation
+   - Open the instructions in Cursor
+   - Wait for you to complete the Cursor evaluation (follow the prompts)
+   - Automatically detect when the evaluation is complete
+   - Generate a report in your preferred format
+   - Open the report (if configured)
+
+This automated workflow eliminates the need to manually run separate commands for evaluation and report generation.
+
+## Extension Settings
+
+* `bugFixEvaluator.pythonPath`: Path to Python executable (default: `python`)
+* `bugFixEvaluator.outputDirectory`: Directory to store evaluation results and reports (default: user's home directory)
+* `bugFixEvaluator.githubToken`: GitHub token for API access (optional)
+* `bugFixEvaluator.reportFormat`: Default format for evaluation reports (options: html, markdown, json, text)
+* `bugFixEvaluator.openReportAutomatically`: Open the report automatically after generation (default: true)
+* `bugFixEvaluator.watchTimeout`: Maximum time (in seconds) to wait for evaluation results (default: 3600)
 
 ## Troubleshooting
 
-### Python Package Not Found
-
-If you get an error about the `bug_fix_cursor_evaluator` package not being found, you need to install it:
-
-```bash
-pip install bug-fix-evaluator
-```
-
-### GitHub API Rate Limit
-
-If you see rate limit errors when accessing GitHub, add a GitHub token in the extension settings.
-
-### Agent Mode Not Working
-
-Make sure you have Cursor's agent mode enabled. In Cursor, press Cmd+Shift+P / Ctrl+Shift+P and select "Enable Agent Mode".
+- Make sure Cursor is installed and available in your PATH
+- Ensure the Bug Fix Evaluator Python package is installed
+- For GitHub PRs, you may need to provide a GitHub token in the extension settings
+- Check the VS Code terminal for error messages
 
 ## License
 

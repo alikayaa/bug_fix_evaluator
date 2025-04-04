@@ -5,6 +5,7 @@ import logging
 import os
 import shutil
 import tempfile
+import subprocess
 from pathlib import Path
 from typing import Dict, Optional, Union
 
@@ -30,6 +31,7 @@ class CursorAgentEvaluator:
         github_token: Optional[str] = None,
         timeout: int = 600,
         verbose: bool = False,
+        auto_cleanup: bool = False,
     ):
         """Initialize the CursorAgentEvaluator.
 
@@ -39,6 +41,7 @@ class CursorAgentEvaluator:
             github_token: GitHub token for API access. Defaults to None.
             timeout: Timeout in seconds for waiting for results. Defaults to 600.
             verbose: Whether to enable verbose logging. Defaults to False.
+            auto_cleanup: Whether to automatically clean up temporary files. Defaults to False.
         """
         self.logger = logging.getLogger(__name__)
         
@@ -49,6 +52,7 @@ class CursorAgentEvaluator:
         self.output_dir = output_dir
         self.github_token = github_token
         self.timeout = timeout
+        self.auto_cleanup = auto_cleanup
         
         os.makedirs(self.output_dir, exist_ok=True)
         
@@ -58,6 +62,10 @@ class CursorAgentEvaluator:
         )
         
         self.logger.info(f"Initialized CursorAgentEvaluator with work_dir={self.work_dir}, output_dir={self.output_dir}")
+        print(f"\n🚀 Bug Fix Evaluator initialized:")
+        print(f"- Working directory: {self.work_dir}")
+        print(f"- Output directory: {self.output_dir}")
+        print(f"- Auto cleanup: {'Enabled' if self.auto_cleanup else 'Disabled (manual cleanup required)'}\n")
 
     def evaluate_pr(self, pr_url: str) -> Dict:
         """Evaluate a PR using Cursor agent mode.
@@ -69,6 +77,7 @@ class CursorAgentEvaluator:
             Dict: Result info with path to results file.
         """
         self.logger.info(f"Evaluating PR: {pr_url}")
+        print(f"\n📝 Preparing evaluation for PR: {pr_url}")
         
         # Parse PR URL
         repo_owner, repo_name, pr_number = self.repo_handler.parse_pr_url(pr_url)
@@ -76,10 +85,17 @@ class CursorAgentEvaluator:
         
         # Get PR diff from GitHub
         pr_diff = self.repo_handler.get_pr_diff_from_github(repo_owner, repo_name, pr_number)
+        if not pr_diff:
+            raise ValueError(f"Failed to get PR diff from GitHub for {pr_url}")
         
         # Create evaluation directory
         eval_dir = os.path.join(self.work_dir, f"eval_{repo_name}_{pr_number}")
         os.makedirs(eval_dir, exist_ok=True)
+        
+        # Save PR diff to file
+        diff_file = os.path.join(eval_dir, f"pr_{pr_number}.diff")
+        with open(diff_file, "w") as f:
+            f.write(pr_diff)
         
         # Generate instruction file
         instruction_file = self._generate_instruction_file(
@@ -89,8 +105,18 @@ class CursorAgentEvaluator:
         # Generate results file path
         results_file = os.path.join(self.output_dir, f"{repo_name}_{pr_number}_results.json")
         
+        print(f"\n✅ PR preparation complete!")
+        print(f"\n📋 Evaluation Files:")
+        print(f"- Instructions: {instruction_file}")
+        print(f"- PR Diff: {diff_file}")
+        print(f"- Expected Results: {results_file}")
+        print(f"\n⚠️ IMPORTANT: Keep these files until evaluation is complete!")
+        print(f"If you don't see the files at the locations above, they may have been cleaned up.")
+        print(f"Set auto_cleanup=False to prevent automatic cleanup.\n")
+        
         return {
-            "instruction_file": instruction_file,
+            "instructions_file": instruction_file,
+            "diff_file": diff_file,
             "results_file": results_file,
             "eval_dir": eval_dir,
             "repo_name": full_repo_name,
@@ -134,7 +160,6 @@ class CursorAgentEvaluator:
                 raise ValueError(f"Only GitHub repositories are supported, got: {repo_url}")
         else:
             # Try to extract from git remote
-            import subprocess
             try:
                 result = subprocess.run(
                     ["git", "-C", repo_path, "remote", "get-url", "origin"],
@@ -199,67 +224,69 @@ class CursorAgentEvaluator:
         pr_diff: str,
         pr_url: str
     ) -> str:
-        """Generate the instruction file for Cursor agent mode.
+        """Generate instruction file for Cursor agent.
 
         Args:
-            eval_dir: Directory to store evaluation files.
-            repo_name: Repository name in the format 'owner/repo'.
+            eval_dir: Directory to write files to.
+            repo_name: Name of the repository (owner/repo).
             pr_number: PR number.
-            pr_diff: PR diff content.
+            pr_diff: Diff of the PR.
             pr_url: URL of the PR.
 
         Returns:
             str: Path to the instruction file.
         """
-        self.logger.info(f"Generating instruction file for PR #{pr_number} in {repo_name}")
+        self.logger.info(f"Generating instruction file for {repo_name} PR #{pr_number}")
         
         # Create directories
         instructions_dir = os.path.join(eval_dir, "instructions")
-        results_dir = os.path.join(eval_dir, "results")
-        
+        results_dir = self.output_dir
         os.makedirs(instructions_dir, exist_ok=True)
         os.makedirs(results_dir, exist_ok=True)
         
-        # Create diff file
-        diff_file = os.path.join(instructions_dir, "pr_diff.diff")
+        # Save PR diff to file
+        diff_file = os.path.join(eval_dir, f"pr_{pr_number}.diff")
         with open(diff_file, "w") as f:
             f.write(pr_diff)
         
         # Create instruction file
         instruction_file = os.path.join(instructions_dir, "bug_fix_evaluation.md")
+        results_file = os.path.join(results_dir, f"{repo_name.replace('/', '_')}_{pr_number}_results.json")
+        results_file = os.path.abspath(results_file)
         
-        instruction_content = f"""# Bug Fix Evaluation
+        instruction_content = f"""# Bug Fix Evaluation - IMPORTANT AGENT INSTRUCTIONS
 
-## Overview
-You are tasked with evaluating a bug fix in a pull request. This evaluation will help determine the quality and effectiveness of the bug fix.
+## Instructions for Cursor Agent
+You are currently in Cursor's agent mode. Please carefully follow these instructions to evaluate a bug fix PR.
+
+## Steps for You (the User)
+1. After opening this file in Cursor, activate Agent Mode by pressing Cmd+Shift+P (macOS) or Ctrl+Shift+P (Windows/Linux) and selecting "Enable Agent Mode"
+2. Ask the agent: "Please evaluate this PR based on the instructions in this file and save the results to the exact file path specified"
+3. Wait for the agent to complete the evaluation
+4. Make sure the agent saves the results to exactly: `{results_file}`
+5. Check that the file has been created successfully
 
 ## Repository and PR Information
 - Repository: {repo_name}
 - PR Number: {pr_number}
 - PR URL: {pr_url}
+- Diff File: {os.path.abspath(diff_file)}
 
-## Evaluation Criteria
-Evaluate the bug fix based on the following criteria:
+## Evaluation Criteria (For the Agent)
+Dear Agent, please evaluate the bug fix based on the following criteria:
 
 1. **Correctness (1-10)**: Does the fix correctly address the bug?
 2. **Completeness (1-10)**: Does the fix address all aspects of the bug?
-3. **Pattern Match (1-10)**: Does the fix follow good patterns and practices?
-4. **Cleanliness (1-10)**: Is the code clean, readable, and well-structured?
-5. **Efficiency (1-10)**: Is the fix efficient in terms of performance?
-6. **Complexity (1-10)**: Is the fix appropriately complex for the problem?
+3. **Code Quality (1-10)**: Is the code clean, readable, and well-structured?
+4. **Efficiency (1-10)**: Is the fix efficient in terms of performance?
+5. **Testing (1-10)**: Does the fix include appropriate tests?
+6. **Documentation (1-10)**: Is the fix well-documented?
 
-## Steps to Follow
-1. Review the PR diff provided in the `pr_diff.diff` file.
-2. Analyze the changes to understand the bug and the fix.
-3. Evaluate the fix based on the criteria above.
-4. Provide an overall evaluation score (1-100).
-5. List strengths and weaknesses of the fix.
-6. Provide suggestions for improvement.
+## Output Format (For the Agent)
+Your evaluation must be saved as a JSON file at EXACTLY this path:
+`{results_file}`
 
-## Output Format
-Your evaluation should be saved as a JSON file at: `{results_dir}/evaluation_results.json`
-
-The JSON should have the following format:
+The JSON must have the following structure:
 ```json
 {{
   "repository": "{repo_name}",
@@ -277,29 +304,29 @@ The JSON should have the following format:
       "strength": "Covers the main scenarios...",
       "weakness": "Doesn't handle edge case X..."
     }},
-    "pattern_match": {{
+    "code_quality": {{
       "score": 9,
-      "explanation": "The fix follows established patterns...",
-      "strength": "Uses the appropriate design pattern...",
-      "weakness": "Minor deviation from project conventions..."
-    }},
-    "cleanliness": {{
-      "score": 8,
       "explanation": "The code is clean and readable...",
       "strength": "Good variable names and structure...",
-      "weakness": "Comments could be more descriptive..."
+      "weakness": "Minor deviation from project conventions..."
     }},
     "efficiency": {{
-      "score": 7,
+      "score": 8,
       "explanation": "The solution is reasonably efficient...",
       "strength": "Avoids unnecessary computations...",
       "weakness": "Could use a more optimized algorithm for X..."
     }},
-    "complexity": {{
+    "testing": {{
+      "score": 7,
+      "explanation": "Tests cover the main scenarios...",
+      "strength": "Good test structure...",
+      "weakness": "Missing tests for edge cases..."
+    }},
+    "documentation": {{
       "score": 8,
-      "explanation": "The complexity is appropriate...",
-      "strength": "Simple solution for a simple problem...",
-      "weakness": "Could be slightly simpler in one area..."
+      "explanation": "Documentation is clear...",
+      "strength": "Good comments and PR description...",
+      "weakness": "Could explain the rationale better..."
     }}
   }},
   "overall": 78,
@@ -320,12 +347,20 @@ The JSON should have the following format:
 }}
 ```
 
-## Additional Notes
-- Be thorough in your evaluation.
-- Consider both the immediate fix and its long-term implications.
-- Be specific in your explanations, strengths, weaknesses, and suggestions.
-- Scores should be integers between 1 and 10.
-- The overall score should be between 1 and 100.
+## PR Diff File
+The PR diff is available at: {os.path.abspath(diff_file)}
+
+You should analyze this diff file to understand the changes made in the PR.
+
+## Saving the Results (CRITICAL)
+After completing your evaluation:
+1. You MUST create a JSON file with the evaluation results at this EXACT path:
+   `{results_file}`
+2. The file MUST follow the structure shown above
+3. Make sure the file is correctly formatted JSON
+4. Confirm when the file has been successfully created
+
+This is crucial for the Bug Fix Evaluator to process your results.
 """
         
         with open(instruction_file, "w") as f:
@@ -348,17 +383,46 @@ The JSON should have the following format:
         self.logger.info(f"Results received for {results_file}")
         return results
 
+    def open_in_cursor(self, file_path: str) -> bool:
+        """Open a file in Cursor.
+
+        Args:
+            file_path: Path to the file to open.
+
+        Returns:
+            bool: True if successful, False otherwise.
+        """
+        self.logger.info(f"Opening file in Cursor: {file_path}")
+        try:
+            # Try to find cursor executable
+            cursor_cmd = "cursor"
+            
+            # On macOS, also try the app bundle
+            if os.path.exists("/Applications/Cursor.app"):
+                cursor_cmd = "open -a Cursor"
+            
+            # Execute the command
+            cmd = f"{cursor_cmd} {file_path}"
+            subprocess.run(cmd, shell=True, check=True)
+            return True
+        except Exception as e:
+            self.logger.error(f"Error opening file in Cursor: {e}")
+            return False
+
     def cleanup(self):
         """Clean up temporary files."""
-        if self.work_dir and os.path.exists(self.work_dir) and self.work_dir != ".":
+        if self.auto_cleanup and self.work_dir and os.path.exists(self.work_dir) and self.work_dir != ".":
             self.logger.info(f"Cleaning up work directory: {self.work_dir}")
             shutil.rmtree(self.work_dir)
         else:
-            self.logger.warning(f"Skipping cleanup of non-temporary work dir: {self.work_dir}")
+            self.logger.info(f"Skipping cleanup of work directory: {self.work_dir}")
+            print(f"\n⚠️ Note: Temporary files in {self.work_dir} were not cleaned up.")
+            print(f"You may want to manually delete this directory when you're done.\n")
 
     def __del__(self):
         """Destructor to ensure cleanup."""
-        try:
-            self.cleanup()
-        except Exception as e:
-            self.logger.error(f"Error during cleanup: {e}") 
+        if self.auto_cleanup:
+            try:
+                self.cleanup()
+            except Exception as e:
+                self.logger.error(f"Error during cleanup: {e}") 

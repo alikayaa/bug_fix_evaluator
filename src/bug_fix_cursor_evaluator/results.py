@@ -16,7 +16,7 @@ def load_cursor_results(file_path: str) -> Dict[str, Any]:
     Load and validate results from a Cursor agent evaluation.
     
     Args:
-        file_path: Path to the results JSON file
+        file_path: Path to the results file
         
     Returns:
         Dictionary with evaluation results
@@ -56,12 +56,32 @@ def load_cursor_results(file_path: str) -> Dict[str, Any]:
             for field in ["score", "explanation", "strength", "weakness"]:
                 if field not in metric_data:
                     raise ValueError(f"Missing {field} for metric {metric}")
+        
+        # Handle case where overall is an integer instead of a dictionary
+        if isinstance(data["overall"], int):
+            # Convert overall to expected dictionary format
+            overall_score = data["overall"]
+            
+            # Extract strengths, weaknesses, and suggestions if available
+            strengths = data.get("strengths", [])
+            weaknesses = data.get("weaknesses", [])
+            suggestions = data.get("suggestions", [])
+            
+            # Create proper overall structure
+            data["overall"] = {
+                "score": overall_score / 10,  # Convert to 0-10 scale
+                "strengths": strengths,
+                "weaknesses": weaknesses,
+                "suggestions": suggestions
+            }
+            
+            logger.info("Converted overall integer to dictionary format")
+        else:
+            # Check overall structure
+            for field in ["score", "strengths", "weaknesses", "suggestions"]:
+                if field not in data["overall"]:
+                    raise ValueError(f"Missing {field} in overall assessment")
                     
-        # Check overall structure
-        for field in ["score", "strengths", "weaknesses", "suggestions"]:
-            if field not in data["overall"]:
-                raise ValueError(f"Missing {field} in overall assessment")
-                
         logger.info(f"Successfully loaded and validated evaluation results from {file_path}")
         return data
         

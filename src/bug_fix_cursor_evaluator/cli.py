@@ -71,6 +71,16 @@ def parse_args():
     prepare_parser.add_argument(
         "--verbose", "-v", action="store_true", help="Enable verbose logging"
     )
+    prepare_parser.add_argument(
+        "--no-cleanup",
+        action="store_true",
+        help="Disable automatic cleanup of temporary files",
+    )
+    prepare_parser.add_argument(
+        "--open-cursor",
+        action="store_true",
+        help="Open the instructions file in Cursor",
+    )
     
     # Prepare local command
     prepare_local_parser = subparsers.add_parser(
@@ -108,6 +118,16 @@ def parse_args():
     prepare_local_parser.add_argument(
         "--verbose", "-v", action="store_true", help="Enable verbose logging"
     )
+    prepare_local_parser.add_argument(
+        "--no-cleanup",
+        action="store_true",
+        help="Disable automatic cleanup of temporary files",
+    )
+    prepare_local_parser.add_argument(
+        "--open-cursor",
+        action="store_true",
+        help="Open the instructions file in Cursor",
+    )
     
     # Report command
     report_parser = subparsers.add_parser(
@@ -131,6 +151,11 @@ def parse_args():
     report_parser.add_argument(
         "--verbose", "-v", action="store_true", help="Enable verbose logging"
     )
+    report_parser.add_argument(
+        "--open",
+        action="store_true",
+        help="Open the report in a web browser",
+    )
     
     # Wait command
     wait_parser = subparsers.add_parser(
@@ -148,6 +173,27 @@ def parse_args():
     )
     wait_parser.add_argument(
         "--verbose", "-v", action="store_true", help="Enable verbose logging"
+    )
+    wait_parser.add_argument(
+        "--report",
+        action="store_true",
+        help="Generate a report from evaluation results",
+    )
+    wait_parser.add_argument(
+        "--format",
+        choices=["html", "md", "markdown", "json", "text"],
+        default="html",
+        help="Report format",
+    )
+    wait_parser.add_argument(
+        "--report-dir",
+        default="./reports",
+        help="Directory to store reports",
+    )
+    wait_parser.add_argument(
+        "--open",
+        action="store_true",
+        help="Open the report in a web browser",
     )
     
     # Evaluate command (prepare + wait)
@@ -197,6 +243,16 @@ def parse_args():
     )
     evaluate_parser.add_argument(
         "--verbose", "-v", action="store_true", help="Enable verbose logging"
+    )
+    evaluate_parser.add_argument(
+        "--no-cleanup",
+        action="store_true",
+        help="Disable automatic cleanup of temporary files",
+    )
+    evaluate_parser.add_argument(
+        "--open-cursor",
+        action="store_true",
+        help="Open the instructions file in Cursor",
     )
     
     # Evaluate local command (prepare-local + wait)
@@ -251,6 +307,16 @@ def parse_args():
     evaluate_local_parser.add_argument(
         "--verbose", "-v", action="store_true", help="Enable verbose logging"
     )
+    evaluate_local_parser.add_argument(
+        "--no-cleanup",
+        action="store_true",
+        help="Disable automatic cleanup of temporary files",
+    )
+    evaluate_local_parser.add_argument(
+        "--open-cursor",
+        action="store_true",
+        help="Open the instructions file in Cursor",
+    )
     
     args = parser.parse_args()
     
@@ -261,35 +327,57 @@ def parse_args():
     return args
 
 def prepare_pr(args):
-    """Prepare a PR for evaluation.
-    
-    Args:
-        args: Command-line arguments.
+    """Prepare a PR for evaluation"""
+    try:
+        evaluator = CursorAgentEvaluator(
+            work_dir=args.work_dir,
+            output_dir=args.output_dir,
+            github_token=args.github_token,
+            timeout=args.timeout,
+            verbose=args.verbose,
+            auto_cleanup=not args.no_cleanup,
+        )
         
-    Returns:
-        dict: Result info with paths to instruction and results files.
-    """
-    evaluator = CursorAgentEvaluator(
-        work_dir=args.work_dir,
-        output_dir=args.output_dir,
-        github_token=args.github_token,
-        timeout=args.timeout,
-        verbose=args.verbose,
-    )
-    
-    result = evaluator.evaluate_pr(args.pr_url)
-    
-    print("\nPR prepared for evaluation:")
-    print(f"Instruction file: {result['instruction_file']}")
-    print(f"Expected results file: {result['results_file']}")
-    print("\nNext steps:")
-    print("1. Open the instruction file in Cursor")
-    print("2. Press Cmd+Shift+P to open the command palette")
-    print("3. Type and select 'Enable Agent Mode'")
-    print("4. Wait for Cursor to evaluate the PR")
-    print(f"5. Once done, run: bug-fix-evaluator wait {result['results_file']}")
-    
-    return result
+        result = evaluator.evaluate_pr(args.pr_url)
+        
+        # Print clear instructions for the user
+        print("\n" + "="*80)
+        print("🔍 Bug Fix Evaluator - Next Steps 🔍".center(80))
+        print("="*80)
+        print("\n1. Open the instructions file in Cursor:")
+        print(f"   {result['instructions_file']}")
+        print("\n2. Enable Agent Mode in Cursor:")
+        print("   Press Cmd+Shift+P (macOS) or Ctrl+Shift+P (Windows/Linux)")
+        print("   Type 'Enable Agent Mode' and select it")
+        print("\n3. Ask the agent to evaluate the PR:")
+        print("   Type: \"Please evaluate this PR based on the instructions in this file\"")
+        print("\n4. The agent will analyze the diff file referenced in the instructions")
+        print("   and provide an evaluation with scores and explanations")
+        print("\n5. Save the evaluation results as a JSON file at:")
+        print(f"   {result['results_file']}")
+        print("\n6. Once the results are saved, generate a report with:")
+        print(f"   bug-fix-evaluator report {result['results_file']} --format html --open")
+        print("\n7. Or wait for results and generate a report in one step:")
+        print(f"   bug-fix-evaluator wait {result['results_file']} --report --format html --open")
+        print("="*80)
+        
+        # Offer to open in Cursor if requested
+        if args.open_cursor:
+            try:
+                evaluator.open_in_cursor(result["instructions_file"])
+                print("\n✅ Opened instructions file in Cursor.")
+                print("   Please follow the steps above to complete the evaluation.")
+            except Exception as e:
+                logger.error(f"Failed to open in Cursor: {e}")
+                print("\n⚠️ Failed to open in Cursor. Please open the file manually.")
+        
+        return result
+    except Exception as e:
+        logger.error(f"Error: {e}")
+        if args.verbose:
+            import traceback
+            logger.debug(traceback.format_exc())
+        sys.exit(1)
 
 def prepare_local_pr(args):
     """Prepare a local PR for evaluation.
@@ -300,48 +388,90 @@ def prepare_local_pr(args):
     Returns:
         dict: Result info with paths to instruction and results files.
     """
-    evaluator = CursorAgentEvaluator(
-        work_dir=args.work_dir,
-        output_dir=args.output_dir,
-        timeout=args.timeout,
-        verbose=args.verbose,
-    )
-    
-    result = evaluator.evaluate_local_pr(
-        args.repo_path, args.pr_number, args.repo_url
-    )
-    
-    print("\nLocal PR prepared for evaluation:")
-    print(f"Instruction file: {result['instruction_file']}")
-    print(f"Expected results file: {result['results_file']}")
-    print("\nNext steps:")
-    print("1. Open the instruction file in Cursor")
-    print("2. Press Cmd+Shift+P to open the command palette")
-    print("3. Type and select 'Enable Agent Mode'")
-    print("4. Wait for Cursor to evaluate the PR")
-    print(f"5. Once done, run: bug-fix-evaluator wait {result['results_file']}")
-    
-    return result
+    try:
+        evaluator = CursorAgentEvaluator(
+            work_dir=args.work_dir,
+            output_dir=args.output_dir,
+            github_token=args.github_token,
+            timeout=args.timeout,
+            verbose=args.verbose,
+            auto_cleanup=not args.no_cleanup,
+        )
+        
+        result = evaluator.evaluate_local_pr(
+            args.repo_path, args.pr_number, args.repo_url
+        )
+        
+        print("\nLocal PR prepared for evaluation:")
+        print(f"Instruction file: {result['instruction_file']}")
+        print(f"Expected results file: {result['results_file']}")
+        print("\nNext steps:")
+        print("1. Open the instruction file in Cursor")
+        print("2. Press Cmd+Shift+P to open the command palette")
+        print("3. Type and select 'Enable Agent Mode'")
+        print("4. Wait for Cursor to evaluate the PR")
+        print(f"5. Once done, run: bug-fix-evaluator wait {result['results_file']}")
+        
+        return result
+    except Exception as e:
+        logger.error(f"Error: {e}")
+        if args.verbose:
+            import traceback
+            logger.debug(traceback.format_exc())
+        sys.exit(1)
 
 def wait_for_results(args):
-    """Wait for results to be generated.
-    
-    Args:
-        args: Command-line arguments.
+    """Wait for results to be generated"""
+    try:
+        print(f"\n⏳ Waiting for results to be saved to: {args.results_file}")
+        print(f"   Timeout: {args.timeout} seconds")
+        print(f"\n   Tip: Have you completed steps 1-5 in the instructions?")
+        print(f"   In Agent Mode, ask: \"Please evaluate this PR based on the instructions in this file\"")
+        print(f"   Then save the results to: {args.results_file}")
         
-    Returns:
-        dict: The results loaded from the file.
-    """
-    from .utils import wait_for_results as wait_func
-    
-    print(f"Waiting for results file: {args.results_file}")
-    results = wait_func(args.results_file, timeout=args.timeout)
-    
-    print("\nResults received:")
-    overall_score = results.get("overall", "N/A")
-    print(f"Overall score: {overall_score}/100")
-    
-    return results
+        # Create evaluator just for waiting
+        evaluator = CursorAgentEvaluator(
+            output_dir=os.path.dirname(args.results_file),
+            timeout=args.timeout,
+            verbose=args.verbose,
+            auto_cleanup=False,  # Don't clean up when just waiting
+        )
+        
+        # Wait for results
+        results = evaluator.wait_for_results(args.results_file)
+        
+        print(f"\n✅ Results received!")
+        if results.get("overall"):
+            print(f"\n📊 Overall score: {results['overall']}/100")
+        
+        # Generate report if requested
+        if args.report:
+            report_path = generate_report(args.results_file, args.format, args.report_dir, args.verbose)
+            print(f"\n📄 Report generated: {report_path}")
+            
+            if args.open:
+                try:
+                    webbrowser.open(f"file://{report_path}")
+                    print(f"   Opened report in browser.")
+                except Exception as e:
+                    logger.error(f"Failed to open report: {e}")
+                    print(f"   Failed to open report. Please open it manually.")
+        
+        return results
+    except TimeoutError:
+        logger.error(f"Timeout waiting for results after {args.timeout} seconds")
+        print(f"\n⚠️ Timeout waiting for results!")
+        print(f"   Make sure the agent has completed the evaluation and saved the results to:")
+        print(f"   {args.results_file}")
+        print(f"\n   You can try again with a longer timeout:")
+        print(f"   bug-fix-evaluator wait {args.results_file} --timeout 1800")
+        sys.exit(1)
+    except Exception as e:
+        logger.error(f"Error waiting for results: {e}")
+        if args.verbose:
+            import traceback
+            logger.debug(traceback.format_exc())
+        sys.exit(1)
 
 def generate_report(results_file, output_dir="./reports", report_format="html", verbose=False):
     """Generate a report from evaluation results.
