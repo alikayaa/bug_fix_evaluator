@@ -30,6 +30,12 @@ def main():
     
     print(f"Starting evaluation for PR: {args.pr_url}")
     
+    # Ensure output directory exists
+    output_dir = args.output_dir
+    if not os.path.exists(output_dir):
+        print(f"Creating output directory: {output_dir}")
+        os.makedirs(output_dir, exist_ok=True)
+    
     # Step 1: Prepare the PR for evaluation
     print("\n--- Step 1: Preparing PR for evaluation ---")
     prepare_cmd = ["bug-fix-evaluator", "prepare", args.pr_url]

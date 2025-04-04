@@ -350,8 +350,25 @@ function activate(context) {
 
 function getConfig(key, defaultValue) {
     const config = vscode.workspace.getConfiguration('bugFixEvaluator');
-    const value = config.get(key);
-    return value !== undefined ? value : defaultValue;
+    let value = config.get(key);
+
+    // If the value is undefined, use the default
+    if (value === undefined) {
+        value = defaultValue;
+    }
+
+    // Handle variable substitution for output directory
+    if (key === 'outputDirectory' && value && typeof value === 'string') {
+        // Replace ${os.homedir} with actual home directory
+        value = value.replace('${os.homedir}', os.homedir());
+        
+        // If the value is still empty, use the default
+        if (!value.trim()) {
+            value = path.join(os.homedir(), 'bug-fix-evaluator-reports');
+        }
+    }
+    
+    return value;
 }
 
 function deactivate() {}

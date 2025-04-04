@@ -57,7 +57,7 @@
         },
         "bugFixEvaluator.outputDirectory": {
           "type": "string",
-          "default": "",
+          "default": "${os.homedir}/bug-fix-evaluator-reports",
           "description": "Directory to store evaluation results and reports"
         },
         "bugFixEvaluator.githubToken": {

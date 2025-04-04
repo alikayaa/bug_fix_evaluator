@@ -36,6 +36,11 @@ def wait_for_file_and_generate_report(results_file, report_format, output_dir, o
         check_interval: Seconds between checks
         timeout: Maximum seconds to wait
     """
+    # Ensure the output directory exists
+    if not os.path.exists(output_dir):
+        print(f"Creating output directory: {output_dir}")
+        os.makedirs(output_dir, exist_ok=True)
+        
     results_path = Path(results_file)
     start_time = time.time()
     
