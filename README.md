@@ -109,6 +109,11 @@ The evaluator compares local code changes against the PR solution using these st
 
 5. **Create report**: The results are compiled into a comprehensive report.
 
+### Example Report
+
+https://github.com/user-attachments/assets/336fb24c-475e-4b7c-b558-69e7c24ea883
+
+
 ## License
 
 MIT License
