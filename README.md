@@ -37,6 +37,28 @@ Then you can install the extension in Cursor:
 
 ## Usage
 
+### Cursor IDE Extension (Recommended)
+
+The easiest way to use Bug Fix Evaluator is through the included VS Code extension for Cursor:
+
+1. **Build and install the extension**:
+   - See the [Installing the VS Code Extension](#installing-the-vs-code-extension) section above
+   - Or, if already built:
+     - Navigate to the `vscode-extension` folder in the repository
+     - Right-click on the `bug-fix-evaluator-0.1.0.vsix` file
+     - Select "Install Extension VSIX" from the context menu
+
+2. **Use the extension commands**:
+   - Press `Cmd+Shift+P` / `Ctrl+Shift+P` to open the command palette
+   - Select one of these commands:
+     - `Bug Fix Evaluator: Evaluate GitHub PR` - Compare local changes against a GitHub PR
+     - `Bug Fix Evaluator: Evaluate Local PR` - Compare against local PR branches
+     - `Bug Fix Evaluator: Auto Evaluate PR & Generate Report` - Complete end-to-end workflow
+     - `Bug Fix Evaluator: View Evaluation Report` - View a previously generated report
+
+For detailed installation and usage instructions, see [Extension Installation Guide](docs/extension_installation.md).
+
+
 ### Using Cursor Agent Mode for Back Testing
 
 The primary purpose of this tool is to compare local code changes against approved PR solutions:
@@ -66,32 +88,6 @@ Next:
    ```bash
    bug-fix-evaluator report path/to/evaluation_results.json --format html --open
    ```
-
-### Cursor IDE Extension (Recommended)
-
-The easiest way to use Bug Fix Evaluator is through the included VS Code extension for Cursor:
-
-1. **Build and install the extension**:
-   - See the [Installing the VS Code Extension](#installing-the-vs-code-extension) section above
-   - Or, if already built:
-     - Navigate to the `vscode-extension` folder in the repository
-     - Right-click on the `bug-fix-evaluator-0.1.0.vsix` file
-     - Select "Install Extension VSIX" from the context menu
-
-2. **Configure the extension**:
-   - Open settings with `Cmd+,` (macOS) or `Ctrl+,` (Windows/Linux)
-   - Search for "Bug Fix Evaluator"
-   - Set the Python path, output directory, and optional GitHub token
-
-3. **Use the extension commands**:
-   - Press `Cmd+Shift+P` / `Ctrl+Shift+P` to open the command palette
-   - Select one of these commands:
-     - `Bug Fix Evaluator: Evaluate GitHub PR` - Compare local changes against a GitHub PR
-     - `Bug Fix Evaluator: Evaluate Local PR` - Compare against local PR branches
-     - `Bug Fix Evaluator: Auto Evaluate PR & Generate Report` - Complete end-to-end workflow
-     - `Bug Fix Evaluator: View Evaluation Report` - View a previously generated report
-
-For detailed installation and usage instructions, see [Extension Installation Guide](docs/extension_installation.md).
 
 ## Evaluation Process
 
