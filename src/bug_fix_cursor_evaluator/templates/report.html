@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        h2 {
+            color: #3498db;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        h3 {
+            color: #2c3e50;
+            margin-top: 25px;
+        }
+        .meta {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        .score-card {
+            background-color: #f9f9f9;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .overall-score {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .metrics-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .metrics-table th {
+            background-color: #f2f2f2;
+            padding: 10px;
+            text-align: left;
+        }
+        .metrics-table td {
+            padding: 10px;
+            border-top: 1px solid #ddd;
+        }
+        .metric-score {
+            font-weight: bold;
+            text-align: center;
+        }
+        .metric-weight {
+            text-align: center;
+            color: #7f8c8d;
+        }
+        .lists {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .lists > div {
+            flex: 1;
+        }
+        .lists h3 {
+            margin-top: 0;
+            color: #3498db;
+        }
+        .strengths h3 {
+            color: #27ae60;
+        }
+        .weaknesses h3 {
+            color: #e74c3c;
+        }
+        .suggestions h3 {
+            color: #f39c12;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        .strengths li {
+            color: #27ae60;
+        }
+        .weaknesses li {
+            color: #e74c3c;
+        }
+        .suggestions li {
+            color: #f39c12;
+        }
+        footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>{{ title }}</h1>
+        <div class="meta">
+            <p>Repository: <a href="https://github.com/{{ data.repo_name }}" target="_blank">{{ data.repo_name }}</a></p>
+            <p>PR: <a href="{{ data.pr_url }}" target="_blank">#{{ data.pr_number }}</a></p>
+            <p>Generated: {{ generated_at }}</p>
+        </div>
+    </header>
+
+    <div class="score-card">
+        <div class="overall-score">{{ "%.1f"|format(data.overall_score) }}/100</div>
+    </div>
+
+    <div class="lists">
+        <div class="strengths">
+            <h3>Strengths</h3>
+            <ul>
+                {% for strength in data.strengths %}
+                <li>{{ strength }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="weaknesses">
+            <h3>Weaknesses</h3>
+            <ul>
+                {% for weakness in data.weaknesses %}
+                <li>{{ weakness }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="suggestions">
+            <h3>Suggestions</h3>
+            <ul>
+                {% for suggestion in data.suggestions %}
+                <li>{{ suggestion }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <h2>Evaluation Metrics</h2>
+    <table class="metrics-table">
+        <thead>
+            <tr>
+                <th>Metric</th>
+                <th>Score</th>
+                <th>Weight</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for metric_name, metric in data.metrics.items() %}
+            <tr>
+                <td><strong>{{ metric_name|replace('_', ' ')|title }}</strong></td>
+                <td class="metric-score">{{ metric.score }}/10</td>
+                <td class="metric-weight">{{ (metric.weight * 100)|int }}%</td>
+                <td>
+                    <p><strong>Explanation:</strong> {{ metric.details.explanation }}</p>
+                    <p><strong>Strength:</strong> {{ metric.details.strength }}</p>
+                    <p><strong>Weakness:</strong> {{ metric.details.weakness }}</p>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <footer>
+        <p>Generated by Bug Fix Cursor Evaluator</p>
+    </footer>
+</body>
+</html> 
