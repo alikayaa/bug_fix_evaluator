@@ -1,0 +1,87 @@
+{
+  "scores": {
+    "correctness": 0.5,
+    "readability": 0.5,
+    "quality": 0.5,
+    "problem_solving": 0.5,
+    "similarity": 0.5
+  },
+  "final_score": 0.5,
+  "weights": {
+    "correctness": 0.35,
+    "readability": 0.15,
+    "quality": 0.15,
+    "problem_solving": 0.25,
+    "similarity": 0.1
+  },
+  "details": {
+    "engineer_pr": {
+      "url": "/var/folders/35/qlqkcnyn295bn3bsfw0kqwjh0000gn/T/tmpva4k4p2n.json",
+      "title": "Fix null pointer exception in login method",
+      "author": "engineer",
+      "created_at": "2023-05-15T10:30:45Z",
+      "merged_at": "2023-05-16T14:20:10Z"
+    },
+    "ai_pr": {
+      "url": "/var/folders/35/qlqkcnyn295bn3bsfw0kqwjh0000gn/T/tmp7n29y7w1.json",
+      "title": "Fix login method null pointer exception",
+      "author": "ai-assistant",
+      "created_at": "2023-05-15T09:45:30Z"
+    },
+    "bug_info": {
+      "description": "Fix null pointer exception in login method When user is null, the login method throws NullPointerException",
+      "keywords": [
+        "when",
+        "is",
+        "exception",
+        "method",
+        "user",
+        "null,",
+        "null",
+        "throws",
+        "nullpointerexception",
+        "the"
+      ]
+    },
+    "file_comparison": {
+      "common_files": [
+        "src/main/java/com/example/UserService.java"
+      ],
+      "only_engineer_files": [],
+      "only_ai_files": []
+    },
+    "metric_breakdown": {
+      "correctness": {
+        "score": 0.5,
+        "weight": 0.35,
+        "details": "Tests pass and bug is fixed correctly"
+      },
+      "readability": {
+        "score": 0.5,
+        "weight": 0.15,
+        "details": "Code follows style guidelines and is easy to understand"
+      },
+      "quality": {
+        "score": 0.5,
+        "weight": 0.15,
+        "details": "Code is well-structured, efficient, and adheres to best practices"
+      },
+      "problem_solving": {
+        "score": 0.5,
+        "weight": 0.25,
+        "details": "The approach effectively addresses the core issue"
+      },
+      "similarity": {
+        "score": 0.5,
+        "weight": 0.1,
+        "details": "Similarity to the engineer's solution"
+      }
+    },
+    "improvement_suggestions": [
+      "Ensure all tests pass and the bug is fully fixed",
+      "Improve code readability and adhere to style guidelines",
+      "Refactor code to improve structure and efficiency",
+      "Revisit problem-solving approach to better address the root cause"
+    ]
+  }
+}
