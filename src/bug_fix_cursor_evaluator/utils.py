@@ -9,14 +9,25 @@ import json
 import time
 import logging
 import subprocess
-from typing import Optional, Union
+from typing import Optional, Union, Dict, List
 
 logger = logging.getLogger(__name__)
 
+class LoggingConfig:
+    """Configuration class for logging setup."""
+    DEFAULT_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    DEFAULT_LEVEL = logging.INFO
+    EXTERNAL_LOGGERS = {
+        "requests": logging.WARNING,
+        "urllib3": logging.WARNING,
+    }
+    PACKAGE_LOGGER = "bug_fix_cursor_evaluator"
+
 def setup_logger(
     level: Union[int, str] = logging.INFO,
-    format_str: str = "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    log_file: Optional[str] = None
+    format_str: str = LoggingConfig.DEFAULT_FORMAT,
+    log_file: Optional[str] = None,
+    external_loggers: Optional[Dict[str, int]] = None
 ) -> None:
     """
     Configure logging for the Bug Fix Cursor Evaluator.
@@ -25,12 +36,13 @@ def setup_logger(
         level: Logging level (can be int or string like 'INFO', 'DEBUG')
         format_str: Format string for log messages
         log_file: Optional path to write logs to a file
+        external_loggers: Optional dictionary mapping logger names to their levels
     """
     # Convert string level to int if needed
     if isinstance(level, str):
-        level = getattr(logging, level.upper(), logging.INFO)
+        level = getattr(logging, level.upper(), LoggingConfig.DEFAULT_LEVEL)
     
-    # Configure root logger
+    # Get root logger and configure it
     root_logger = logging.getLogger()
     root_logger.setLevel(level)
     
@@ -38,34 +50,46 @@ def setup_logger(
     for handler in root_logger.handlers[:]:
         root_logger.removeHandler(handler)
     
-    # Create console handler
+    # Create formatter to reuse
+    formatter = logging.Formatter(format_str)
+    
+    # Add console handler
+    add_console_handler(root_logger, level, formatter)
+    
+    # Add file handler if specified
+    if log_file:
+        add_file_handler(root_logger, log_file, level, formatter)
+    
+    # Configure external loggers
+    configure_external_loggers(level, external_loggers)
+
+def add_console_handler(logger_obj: logging.Logger, level: int, formatter: logging.Formatter) -> None:
+    """Add console handler to logger."""
     console_handler = logging.StreamHandler()
     console_handler.setLevel(level)
-    console_handler.setFormatter(logging.Formatter(format_str))
-    root_logger.addHandler(console_handler)
-    
-    # Configure file handler if log_file is specified
-    if log_file:
-        configure_file_handler(root_logger, log_file, level, format_str)
-    
-    # Set specific logger levels
-    set_specific_logger_levels(level)
+    console_handler.setFormatter(formatter)
+    logger_obj.addHandler(console_handler)
 
-def configure_file_handler(logger: logging.Logger, log_file: str, level: int, format_str: str) -> None:
-    """Configure file handler for logging."""
+def add_file_handler(logger_obj: logging.Logger, log_file: str, level: int, formatter: logging.Formatter) -> None:
+    """Add file handler to logger."""
     try:
         file_handler = logging.FileHandler(log_file)
         file_handler.setLevel(level)
-        file_handler.setFormatter(logging.Formatter(format_str))
-        logger.addHandler(file_handler)
+        file_handler.setFormatter(formatter)
+        logger_obj.addHandler(file_handler)
     except Exception as e:
+        logger = logging.getLogger(__name__)
         logger.error(f"Failed to set up file logging: {e}")
 
-def set_specific_logger_levels(level: int) -> None:
-    """Set specific logger levels for external libraries."""
-    logging.getLogger("requests").setLevel(logging.WARNING)
-    logging.getLogger("urllib3").setLevel(logging.WARNING)
-    pkg_logger = logging.getLogger("bug_fix_cursor_evaluator")
+def configure_external_loggers(level: int, external_loggers: Optional[Dict[str, int]] = None) -> None:
+    """Configure external and package loggers."""
+    # Set levels for external libraries
+    loggers_to_configure = external_loggers or LoggingConfig.EXTERNAL_LOGGERS
+    for logger_name, logger_level in loggers_to_configure.items():
+        logging.getLogger(logger_name).setLevel(logger_level)
+    
+    # Set package logger level
+    pkg_logger = logging.getLogger(LoggingConfig.PACKAGE_LOGGER)
     pkg_logger.setLevel(level)
 
 def is_git_repo(path: str) -> bool:

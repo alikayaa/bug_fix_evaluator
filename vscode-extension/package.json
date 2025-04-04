@@ -25,7 +25,6 @@
     "onCommand:bugFixEvaluator.evaluatePR",
     "onCommand:bugFixEvaluator.evaluateLocalPR",
     "onCommand:bugFixEvaluator.showReport",
-    "onCommand:bugFixEvaluator.autoEvaluateAndReport"
   ],
   "main": "./extension.js",
   "contributes": {
@@ -41,10 +40,6 @@
       {
         "command": "bugFixEvaluator.showReport",
         "title": "Bug Fix Evaluator: View Evaluation Report"
-      },
-      {
-        "command": "bugFixEvaluator.autoEvaluateAndReport",
-        "title": "Bug Fix Evaluator: Auto Evaluate PR & Generate Report"
       }
     ],
     "configuration": {
@@ -70,11 +65,6 @@
           "enum": ["html", "markdown", "json", "text"],
           "default": "html",
           "description": "Default format for evaluation reports"
-        },
-        "bugFixEvaluator.openReportAutomatically": {
-          "type": "boolean",
-          "default": true,
-          "description": "Open the report automatically after generation"
         },
         "bugFixEvaluator.watchTimeout": {
           "type": "number",

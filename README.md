@@ -13,10 +13,7 @@ A tool for evaluating bug fixes by comparing engineer and AI solutions or analyz
 ## Installation
 
 ```bash
-# Install from PyPI
-pip install bug-fix-evaluator
-
-# Or install from the repository
+# Install from the repository (not available on PyPI)
 git clone https://github.com/alikayaa/bug_fix_evaluator.git
 cd bug_fix_evaluator
 pip install -e .
@@ -142,12 +139,6 @@ The Bug Fix Cursor Evaluator is a specialized tool that leverages Cursor's agent
 ## Installation
 
 Install from the repository:
-
-```bash
-pip install git+https://github.com/alikayaa/bug_fix_evaluator.git
-```
-
-Or install for development:
 
 ```bash
 git clone https://github.com/alikayaa/bug_fix_evaluator.git

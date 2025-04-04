@@ -13,12 +13,17 @@ This extension provides integration with the Bug Fix Evaluator tool, which helps
 
 - [Cursor Editor](https://cursor.sh/) installed and available in your PATH
 - Python 3.8 or higher
-- Bug Fix Evaluator package installed (`pip install bug-fix-cursor-evaluator`)
+- Bug Fix Evaluator package installed (see installation instructions below)
 
 ## Installation
 
 1. Install the extension from the VS Code marketplace
-2. Install the required Python package: `pip install bug-fix-cursor-evaluator`
+2. Install the Bug Fix Evaluator package from the repository:
+   ```bash
+   git clone https://github.com/alikayaa/bug_fix_evaluator.git
+   cd bug_fix_evaluator
+   pip install -e .
+   ```
 3. Configure the extension settings if needed
 
 ## Usage
@@ -71,7 +76,6 @@ This automated workflow eliminates the need to manually run separate commands fo
 * `bugFixEvaluator.outputDirectory`: Directory to store evaluation results and reports (default: user's home directory)
 * `bugFixEvaluator.githubToken`: GitHub token for API access (optional)
 * `bugFixEvaluator.reportFormat`: Default format for evaluation reports (options: html, markdown, json, text)
-* `bugFixEvaluator.openReportAutomatically`: Open the report automatically after generation (default: true)
 * `bugFixEvaluator.watchTimeout`: Maximum time (in seconds) to wait for evaluation results (default: 3600)
 
 ## Troubleshooting

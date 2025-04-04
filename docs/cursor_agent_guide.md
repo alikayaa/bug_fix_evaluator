@@ -12,7 +12,7 @@ This guide explains how to evaluate PR bug fixes using Bug Fix Evaluator with Cu
 ## Prerequisites
 
 1. [Cursor IDE](https://cursor.sh/) installed and properly configured
-2. Bug Fix Evaluator package installed: `pip install bug-fix-evaluator`
+2. Bug Fix Evaluator package installed (see [README.md](../README.md) for installation instructions)
 3. A GitHub PR URL to evaluate
 
 ## Step-by-Step Guide

@@ -5,13 +5,23 @@ This guide walks you through installing the Bug Fix Evaluator extension in Curso
 ## Prerequisites
 
 - [Cursor IDE](https://cursor.sh/) installed
-- Bug Fix Evaluator Python package installed: `pip install bug-fix-evaluator`
+- Bug Fix Evaluator Python package installed (see [README.md](../README.md) for installation instructions)
 
 ## Installation Methods
 
-### Method 1: Installing from VSIX File (Recommended)
+### Method 1: Direct Installation from VSIX File (Recommended)
 
-1. Download the `bug-fix-evaluator-0.1.0.vsix` file from the `dist` directory or from the [releases page](https://github.com/alikayaa/bug_fix_evaluator/releases)
+1. Navigate to the `vscode-extension` folder in the bug_fix_evaluator repository
+
+2. Right-click on the `bug-fix-evaluator-0.1.0.vsix` file 
+
+3. Select "Install Extension VSIX" from the context menu
+
+4. The extension will be installed and you'll see a notification when it's complete
+
+### Method 2: Installing from Command Palette
+
+1. Download the `bug-fix-evaluator-0.1.0.vsix` file from the `vscode-extension` directory or from the [releases page](https://github.com/alikayaa/bug_fix_evaluator/releases)
 
 2. Open Cursor IDE
 
@@ -23,7 +33,7 @@ This guide walks you through installing the Bug Fix Evaluator extension in Curso
 
 6. The extension will be installed and you'll see a notification when it's complete
 
-### Method 2: Installing from VS Code Marketplace (Coming Soon)
+### Method 3: Installing from VS Code Marketplace (Coming Soon)
 
 Once the extension is published to the VS Code Marketplace:
 
@@ -73,9 +83,11 @@ If Cursor doesn't find the extension after installation, try:
 
 ### Python Package Not Found
 
-If you see an error about the Python package not being found, install it with:
+If you see an error about the Python package not being found, install it from the repository:
 ```bash
-pip install bug-fix-evaluator
+git clone https://github.com/alikayaa/bug_fix_evaluator.git
+cd bug_fix_evaluator
+pip install -e .
 ```
 
 ### GitHub Rate Limit Errors
