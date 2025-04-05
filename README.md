@@ -111,7 +111,8 @@ The evaluator compares local code changes against the PR solution using these st
 
 ### Example Report
 
-https://github.com/user-attachments/assets/336fb24c-475e-4b7c-b558-69e7c24ea883
+![report](https://github.com/user-attachments/assets/35474003-3439-403c-9ef5-23598aad43c9)
+
 
 
 ## License
