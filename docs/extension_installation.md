@@ -1,10 +1,11 @@
-# Installing the Bug Fix Evaluator Extension in Cursor
+# Installing the Bug Fix Evaluator Extension
 
-This guide walks you through installing the Bug Fix Evaluator extension in Cursor IDE.
+This guide explains how to install the Bug Fix Evaluator extension in VS Code-based editors like Cursor IDE. The extension helps evaluate bug fixes in GitHub pull requests by integrating with Cursor's agent mode.
 
 ## Prerequisites
 
 - [Cursor IDE](https://cursor.sh/) installed
+- [VS Code](https://code.visualstudio.com) installed
 - Bug Fix Evaluator Python package installed (see [README.md](../README.md) for installation instructions)
 
 ## Installation Methods
@@ -23,7 +24,7 @@ This guide walks you through installing the Bug Fix Evaluator extension in Curso
 
 1. Download the `bug-fix-evaluator-0.1.0.vsix` file from the `extension` directory or from the [releases page](https://github.com/alikayaa/bug_fix_evaluator/releases)
 
-2. Open Cursor IDE
+2. Open Cursor IDE / VS Code
 
 3. Press `Cmd+Shift+P` (macOS) or `Ctrl+Shift+P` (Windows/Linux) to open the command palette
 
@@ -37,7 +38,7 @@ This guide walks you through installing the Bug Fix Evaluator extension in Curso
 
 Once the extension is published to the VS Code Marketplace:
 
-1. Open Cursor IDE
+1. Open Cursor IDE / VS Code
 
 2. Click on the Extensions icon in the Activity Bar on the side of the window (or press `Cmd+Shift+X` / `Ctrl+Shift+X`)
 
