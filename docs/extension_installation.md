@@ -11,7 +11,7 @@ This guide walks you through installing the Bug Fix Evaluator extension in Curso
 
 ### Method 1: Direct Installation from VSIX File (Recommended)
 
-1. Navigate to the `vscode-extension` folder in the bug_fix_evaluator repository
+1. Navigate to the `extension` folder in the bug_fix_evaluator repository
 
 2. Right-click on the `bug-fix-evaluator-0.1.0.vsix` file 
 
@@ -21,7 +21,7 @@ This guide walks you through installing the Bug Fix Evaluator extension in Curso
 
 ### Method 2: Installing from Command Palette
 
-1. Download the `bug-fix-evaluator-0.1.0.vsix` file from the `vscode-extension` directory or from the [releases page](https://github.com/alikayaa/bug_fix_evaluator/releases)
+1. Download the `bug-fix-evaluator-0.1.0.vsix` file from the `extension` directory or from the [releases page](https://github.com/alikayaa/bug_fix_evaluator/releases)
 
 2. Open Cursor IDE
 

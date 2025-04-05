@@ -24,14 +24,14 @@ The VS Code extension needs to be built and installed manually:
 
 ```bash
 # From the repository root
-cd vscode-extension
+cd extension
 npm install
 npm run package
-# This will create bug-fix-evaluator-0.1.0.vsix in the vscode-extension folder
+# This will create bug-fix-evaluator-0.1.0.vsix in the extension folder
 ```
 
 Then you can install the extension in Cursor:
-- Navigate to the `vscode-extension` folder in the repository
+- Navigate to the `extension` folder in the repository
 - Right-click on the `bug-fix-evaluator-0.1.0.vsix` file
 - Select "Install Extension VSIX" from the context menu
 
@@ -44,7 +44,7 @@ The easiest way to use Bug Fix Evaluator is through the included VS Code extensi
 1. **Build and install the extension**:
    - See the [Installing the VS Code Extension](#installing-the-vs-code-extension) section above
    - Or, if already built:
-     - Navigate to the `vscode-extension` folder in the repository
+     - Navigate to the `extension` folder in the repository
      - Right-click on the `bug-fix-evaluator-0.1.0.vsix` file
      - Select "Install Extension VSIX" from the context menu
 

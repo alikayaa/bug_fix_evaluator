@@ -1,7 +1,6 @@
 const vscode = require('vscode');
 const path = require('path');
 const fs = require('fs');
-const { exec, spawn } = require('child_process');
 const os = require('os');
 
 /**
